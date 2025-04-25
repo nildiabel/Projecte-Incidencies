@@ -18,6 +18,8 @@ const Motorcycle = require('./models/Incidencia');
 
 const incidenciesRoutes = require('./routes/incidencies.routes');
 
+const DepartamentRoutes = require('./routes/Departament.routes');
+
 
 
 const app = express();
@@ -32,6 +34,9 @@ app.use('/images', express.static(path.join(__dirname, 'public/images')));
 const incidenciesRoutesEJS = require('./routes/incidenciesEJS.routes');
 const Incidencia = require('./models/Incidencia');
 
+const DepartamentRoutesEJS = require('./routes/DepartamentEJS.routes');
+const Departament = require('./models/Departament');
+
 // Rutes EJS
 app.use('/incidencies', incidenciesRoutesEJS);
 
@@ -41,6 +46,31 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use('/api/incidencies', incidenciesRoutes);
 
+app.use('/departament', DepartamentRoutesEJS);
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+
+app.use('/api/departament', DepartamentRoutes);
+
+
+
+app.use('/departament', DepartamentRoutesEJS);
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+
+app.use('/api/departament', incidenciesRoutes);
+
+app.use('/departament', DepartamentRoutesEJS);
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+
+app.use('/api/departament', DepartamentRoutes);
 
 
 // Ruta de prova
