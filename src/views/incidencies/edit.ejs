@@ -1,0 +1,40 @@
+<%- include('../partials/header', { title: 'Editar categoria' }) %>
+  <h1>Editar Incidencia</h1>
+  <form action="/incidencies/<%= incidencia.id %>/update" method="POST">
+    <div class="mb-3">
+      <label for="descripcio" class="form-label">descripcio</label>
+      <input
+        type="text"
+        name="descripcio"
+        value="<%= incidencia.descripcio %>"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="prioritat" class="form-label">Prioritat</label>
+      <select
+        id="prioritat"
+        name="prioritat"
+        class="form-select"
+        required
+      >
+        <option value="" disabled selected>Selecciona la prioritat</option>
+        <option value="Alta">Alta</option>
+        <option value="Mitjana">Mitjana</option>
+        <option value="Baixa">Baixa</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="departament" class="form-label">departament</label>
+      <input
+        type="text"
+        name="departament"
+        value="<%= incidencia.departament %>"
+        class="form-control"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-primary">Actualitzar</button>
+  </form>
+<%- include('../partials/footer') %>

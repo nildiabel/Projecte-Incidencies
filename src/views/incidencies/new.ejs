@@ -1,0 +1,36 @@
+<%- include('../partials/header', { title: 'Afegir Incidència' }) %>
+
+<div class="container mt-4">
+  <h1 class="mb-4">Nova Incidència</h1>
+
+  <form action="/incidencies/create" method="POST">
+    <div class="mb-3">
+      <label for="descripcio" class="form-label">Descripció</label>
+      <input
+        type="text"
+        id="descripcio"
+        name="descripcio"
+        class="form-control"
+        placeholder="Introdueix la descripció"
+        required
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="departament" class="form-label">departament</label>
+      <input
+        type="text"
+        id="departament"
+        name="departament"
+        class="form-control"
+        placeholder="Introdueix el departament"
+        required
+      />
+    </div>
+
+    <button type="submit" class="btn btn-success">Crear Incidència</button>
+    <a href="/incidencies" class="btn btn-secondary ms-2">Cancel·lar</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

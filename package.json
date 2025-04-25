@@ -1,0 +1,32 @@
+{
+  "name": "incidencies_hcordoba_ndiaz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nildiabel/tutorial1DAM.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nildiabel/tutorial1DAM/issues"
+  },
+  "homepage": "https://github.com/nildiabel/tutorial1DAM#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mysql2": "^3.14.0",
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
