@@ -10,22 +10,10 @@ const Departament = sequelize.define('Departament', {
     autoIncrement: true,
   },
 
-  departament: {
+  nom_dpt: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: false,
   },
-  
-  descripcio: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: false,
-  },
-
-  prioritat: {
-    type: DataTypes.ENUM('RRHH', 'Secretaría', 'Informática', 'Dirección'),
-    allowNull: false, 
-  }
 });
 
 module.exports = Departament;

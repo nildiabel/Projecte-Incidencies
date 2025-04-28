@@ -2,29 +2,36 @@
 const express = require('express');
 const router = express.Router();
 const Incidencia = require('../models/Incidencia');
+const Departament = require('../models/Departament');
 
 // Llistar motos (GET) 
 router.get('/', async (req, res) => {
     try {
-        const incidencies = await Incidencia.findAll();
+        const incidencies = await Incidencia.findAll( { include: Departament });
         res.render('incidencies/list', { incidencies });
     }
-    catch (error) {
+    catch (error) { 
         console.error('Error al recuperar les incidencies:', error);
         res.status(500).send('Error al recuperar les incidencies');
     }
 });
 
 // Form per crear una moto (GET)
-router.get('/new', (req, res) => {
-    res.render('incidencies/new');
+router.get('/new', async (req, res) => {
+    try {
+        const departaments = await Departament.findAll(); // Fetch departaments from the database
+        res.render('incidencies/new', { departaments });
+    } catch (error) {
+        console.error('Error al recuperar els departaments:', error);
+        res.status(500).send('Error al recuperar els departaments');
+    }
 });
 
 // Crear moto (POST)
 router.post('/create', async (req, res) => {
     try {
-        const { descripcio, departament } = req.body;
-        await Incidencia.create({ descripcio, prioritat: 'Null', departament });
+        const { descripcio, id } = req.body; // descripcio is a string, id is an integer representing the departament
+        await Incidencia.create({ descripcio, id_departament: id, prioritat: 'Null' });
         return res.redirect('/incidencies');
     } catch (error) {
         console.error('Error al crear incidencia:', error);

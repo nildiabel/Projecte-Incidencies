@@ -10,10 +10,9 @@ const Incidencia = sequelize.define('Incidencia', {
     autoIncrement: true,
   },
 
-  departament: {
-    type: DataTypes.STRING,
+  id_departament: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    unique: false,
   },
   
   descripcio: {
@@ -23,7 +22,7 @@ const Incidencia = sequelize.define('Incidencia', {
   },
 
   prioritat: {
-    type: DataTypes.ENUM('Baixa', 'Mitjana', 'Alta', 'Null'),
+    type: DataTypes.STRING,
     allowNull: false, 
   }
 });

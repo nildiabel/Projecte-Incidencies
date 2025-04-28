@@ -17,15 +17,12 @@
     </div>
 
     <div class="mb-3">
-      <label for="departament" class="form-label">departament</label>
-      <input
-        type="text"
-        id="departament"
-        name="departament"
-        class="form-control"
-        placeholder="Introdueix el departament"
-        required
-      />
+      <label for="id" class="form-label">Departament</label>
+      <select name="id" class="form-select">
+        <% departaments.forEach(departament => { %>
+          <option value="<%= departament.id %>"><%= departament.nom_dpt %></option>
+        <% }) %>
+      </select>
     </div>
 
     <button type="submit" class="btn btn-success">Crear Incidència</button>
