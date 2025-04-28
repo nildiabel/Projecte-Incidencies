@@ -1,7 +1,7 @@
 <h1>Hola!​👋​🚀​</h1>
 <h2>Benvinguts al Gestor d'Incidències!🛠️​</h2>
 
-[![My Skills](https://skillicons.dev/icons?i=js,html,nodejs,bootstrap)](https://skillicons.dev)
+[![My Skills](https://skillicons.dev/icons?i=js,html,nodejs,bootstrap,vscode,npm,express)](https://skillicons.dev)
 
 ###
 En aquest document trobaràs tota la informació necessària sobre aquest programa destinat a **l'administració d'incidències**.  
