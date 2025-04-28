@@ -1,3 +1,4 @@
+<!-- header.ejs -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,15 +11,57 @@
   />
 </head>
 <body class="bg-light">
+
+  <!-- Barra de navegación -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
       <a class="navbar-brand" href="/">Projecte Incidencies</a>
       <div>
         <ul class="navbar-nav me-auto">
           <li class="nav-item"><a class="nav-link" href="/">Inici</a></li>
-          <li class="nav-item"><a class="nav-link" href="/incidencies">Incidencies (EJS)</a></li>
+          <!-- Modificado el enlace para que active el formulario de contraseña -->
+          <li class="nav-item">
+            <a class="nav-link" href="javascript:void(0)" onclick="showPasswordPrompt()">Incidencies (EJS)</a>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
-  <div class="container">
+
+  <!-- Contenedor para mostrar el formulario de contraseña (oculto inicialmente) -->
+  <div id="password-prompt" class="container mt-5" style="display: none;">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6">
+        <div class="card p-4 shadow-lg">
+          <div class="input-group mb-3">
+            <span class="input-group-text">Contraseña</span>
+            <input type="password" id="password" class="form-control" placeholder="Introduce la contraseña">
+          </div>
+          <button class="btn btn-success mb-3 w-100" onclick="checkPassword()">Acceder</button>
+          <p id="error-message" class="text-danger mt-2" style="display: none;">Contraseña incorrecta, intenta de nuevo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const correctPassword = "12345"; // Establece la contraseña correcta
+
+    // Muestra el formulario para la contraseña y oculta el contenido inicial
+    function showPasswordPrompt() {
+      document.getElementById("password-prompt").style.display = "block";
+      document.getElementById("main-content").style.display = "none"; // Oculta el contenido principal
+    }
+
+    // Verifica la contraseña
+    function checkPassword() {
+      const enteredPassword = document.getElementById("password").value;
+      if (enteredPassword === correctPassword) {
+        window.location.href = "/incidencies"; // Redirige a la página protegida
+      } else {
+        document.getElementById("error-message").style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
