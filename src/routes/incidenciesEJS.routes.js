@@ -31,7 +31,7 @@ router.get('/new', async (req, res) => {
 router.post('/create', async (req, res) => {
     try {
         const { descripcio, id } = req.body; // descripcio is a string, id is an integer representing the departament
-        await Incidencia.create({ descripcio, id_departament: id, prioritat: 'Null' });
+        await Incidencia.create({ descripcio, id_departament: id, prioritat: 'Null', estat: 'No resolt'});
         return res.redirect('/incidencies');
     } catch (error) {
         console.error('Error al crear incidencia:', error);
@@ -54,13 +54,14 @@ router.get('/:id/edit', async (req, res) => {
 // Actualitzar moto (POST)
 router.post('/:id/update', async (req, res) => {
     try {
-        const { id, descripcio, prioritat, departament } = req.body;
+        const { id, descripcio, prioritat, departament , estat } = req.body;
         const incidencia = await Incidencia.findByPk(req.params.id);
         if (!incidencia) return res.status(404).send('Incidencia no trobada');
         incidencia.id = id;
         incidencia.descripcio = descripcio;
         incidencia.prioritat = prioritat;
         incidencia.departament = departament;
+        incidencia.estat = estat;
         await incidencia.save();
 
         res.redirect('/incidencies');

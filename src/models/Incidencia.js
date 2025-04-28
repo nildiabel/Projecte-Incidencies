@@ -24,6 +24,12 @@ const Incidencia = sequelize.define('Incidencia', {
   prioritat: {
     type: DataTypes.STRING,
     allowNull: false, 
+  },
+
+  estat: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: false
   }
 });
 
