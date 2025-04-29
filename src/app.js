@@ -10,6 +10,7 @@ const path = require('path');
 
 const Incidencia = require('./models/Incidencia');
 const Departament = require('./models/Departament');
+const Tecnic = require('./models/Tecnic');
 
 
 
@@ -18,11 +19,14 @@ const Departament = require('./models/Departament');
 Departament.hasMany(Incidencia, { foreignKey: 'id_departament', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Incidencia.belongsTo(Departament, { foreignKey: 'id_departament', onUpdate: 'CASCADE' });
 
+Tecnic.hasMany(Incidencia, { foreignKey: 'id_tecnic', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Incidencia.belongsTo(Tecnic, { foreignKey: 'id_tecnic', onUpdate: 'CASCADE' });
+
 
 
 const incidenciesRoutes = require('./routes/incidencies.routes');
 
-const DepartamentRoutes = require('./routes/departament.routes');
+const departamentsRoutes = require('./routes/departaments.routes');
 
 
 
@@ -34,7 +38,7 @@ app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
 // Rutes EJS
 const incidenciesRoutesEJS = require('./routes/incidenciesEJS.routes');
-const DepartamentRoutesEJS = require('./routes/departamentEJS.routes');
+const departamentsRoutesEJS = require('./routes/departamentsEJS.routes');
 
 // Rutes EJS
 app.use('/incidencies', incidenciesRoutesEJS);
@@ -45,17 +49,17 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use('/api/incidencies', incidenciesRoutes);
 
-app.use('/departament', DepartamentRoutesEJS);
+app.use('/departament', departamentsRoutesEJS);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 
-app.use('/api/departament', DepartamentRoutes);
+app.use('/api/departament', departamentsRoutes);
 
 
 
-app.use('/departament', DepartamentRoutesEJS);
+app.use('/departament', departamentsRoutesEJS);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -63,13 +67,13 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use('/api/departament', incidenciesRoutes);
 
-app.use('/departament', DepartamentRoutesEJS);
+app.use('/departament', departamentsRoutesEJS);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 
-app.use('/api/departament', DepartamentRoutes);
+app.use('/api/departament', departamentsRoutes);
 
 
 // Ruta de prova
@@ -114,9 +118,28 @@ const port = process.env.PORT || 3000;
         { nom_dpt: 'Recursos Humans' },
         { nom_dpt: 'Direcció' },
         { nom_dpt: 'Coordinació de Cicles Formatius' },
-        { nom_dpt: 'Biblioteca Escolar' }
+        { nom_dpt: 'Biblioteca Escolar' },
       ]);
       console.log('Departaments inicials creats');
+    }
+
+    // Check if any technicians exist before creating
+    const existingTechnicians = await Tecnic.findOne();
+    if (!existingTechnicians) {
+      // Only create technicians if none exist
+      await Tecnic.bulkCreate([
+        { nom: 'Joan Pérez' },
+        { nom: 'Maria López' },
+        { nom: 'Carles Garcia' },
+        { nom: 'Anna Martínez' },
+        { nom: 'Pere Font' },
+        { nom: 'Laura Vidal' },
+        { nom: 'Marc Soler' },
+        { nom: 'Clara Roca' },
+        { nom: 'Jordi Serra' },
+        { nom: 'Marta Bosch' },
+      ]);
+      console.log('Tècnics inicials creats');
     }
 
     app.listen(port, () => {

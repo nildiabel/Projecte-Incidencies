@@ -14,6 +14,11 @@ const Incidencia = sequelize.define('Incidencia', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+
+  id_tecnic: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   
   descripcio: {
     type: DataTypes.STRING,
@@ -23,14 +28,14 @@ const Incidencia = sequelize.define('Incidencia', {
 
   prioritat: {
     type: DataTypes.STRING,
-    allowNull: false, 
+    allowNull: true, 
   },
 
   estat: {
     type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: false
-  }
+    defaultValue: 'No resolt'
+  }  
 });
 
 module.exports = Incidencia;

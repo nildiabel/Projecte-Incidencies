@@ -1,8 +1,11 @@
-<%- include('../partials/header', { title: 'Editar categoria' }) %>
-  <h1>Editar Incidencia</h1>
-  <form action="/incidencies/<%= incidencia.id %>/update" method="POST">
+<%- include('../partials/header', { title: 'Editar incidència' }) %>
+
+<div class="container mt-5">
+  <h1 class="mb-4 text-center">Editar Incidència</h1>
+
+  <form action="/incidencies/<%= incidencia.id %>/update" method="POST" class="mx-auto" style="max-width: 600px;">
     <div class="mb-3">
-      <label for="descripcio" class="form-label">descripcio</label>
+      <label for="descripcio" class="form-label">Descripció</label>
       <input
         type="text"
         name="descripcio"
@@ -11,66 +14,52 @@
         required
       />
     </div>
+
     <div class="mb-3">
       <label for="prioritat" class="form-label">Prioritat</label>
-      <select
-        id="prioritat"
-        name="prioritat"
-        class="form-select"
-        required
-      >
-        <option value="" disabled selected>Selecciona la prioritat</option>
-        <option value="Alta">Alta</option>
-        <option value="Mitjana">Mitjana</option>
-        <option value="Baixa">Baixa</option>
+      <select id="prioritat" name="prioritat" class="form-select" required>
+        <option value="" disabled>Selecciona la prioritat</option>
+        <option value="Alta" <%= incidencia.prioritat === 'Alta' ? 'selected' : '' %>>Alta</option>
+        <option value="Mitjana" <%= incidencia.prioritat === 'Mitjana' ? 'selected' : '' %>>Mitjana</option>
+        <option value="Baixa" <%= incidencia.prioritat === 'Baixa' ? 'selected' : '' %>>Baixa</option>
       </select>
     </div>
-    <div class="mb-3">
-      <label for="departament" class="form-label">departament</label>
-      <select
-        id="departament"
-        name="departament"
-        class="form-select"
-        required
-      >
-        <option value="" disabled selected>Selecciona el departament</option>
-        <option value="Matemàtiques">Matemàtiques</option>
-        <option value="Llengua Castellana">Llengua Castellana</option>
-        <option value="Llengua Catalana">Llengua Catalana</option>
-        <option value="Ciències Socials">Ciències Socials</option>
-        <option value="Ciències Naturals">Ciències Naturals</option>
-        <option value="Educació Física">Educació Física</option>
-        <option value="Anglès">Anglès</option>
-        <option value="Llengües Estrangeres">Llengües Estrangeres</option>
-        <option value="Filosofia">Filosofia</option>
-        <option value="Tecnologia">Tecnologia</option>
-        <option value="Informàtica">Informàtica</option>
-        <option value="Educació Plàstica i Visual">Educació Plàstica i Visual</option>
-        <option value="Música">Música</option>
-        <option value="Secretaria">Secretaria</option>
-        <option value="Administració">Administració</option>
-        <option value="Recursos Humans">Recursos Humans</option>
-        <option value="Direcció">Direcció</option>
-        <option value="Coordinació de Cicles Formatius">Coordinació de Cicles Formatius</option>
-        <option value="Biblioteca Escolar">Biblioteca Escolar</option>
 
+    <div class="mb-3">
+      <label for="departament_id" class="form-label">Departament</label>
+      <select id="departament_id" name="departament_id" class="form-select" required>
+        <% departaments.forEach(departament => { %>
+          <option value="<%= departament.id %>" <%= departament.id === incidencia.departament_id ? 'selected' : '' %>>
+            <%= departament.nom_dpt %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="tecnic_id" class="form-label">Tècnic</label>
+      <select id="tecnic_id" name="tecnic_id" class="form-select" required>
+        <% tecnics.forEach(tecnic => { %>
+          <option value="<%= tecnic.id %>" <%= tecnic.id === incidencia.tecnic_id ? 'selected' : '' %>>
+            <%= tecnic.nom %>
+          </option>
+        <% }) %>
       </select>
     </div>
 
     <div class="mb-3">
       <label for="estat" class="form-label">Estat</label>
-      <select
-        id="estat"
-        name="estat"
-        class="form-select"
-        required
-      >
-        <option value="" disabled selected>Selecciona el estat</option>
-        <option value="Resolt">Resolt</option>
-        <option value="No resolt">No resolt</option>
-
+      <select id="estat" name="estat" class="form-select" required>
+        <option value="" disabled>Selecciona l'estat</option>
+        <option value="Resolt" <%= incidencia.estat === 'Resolt' ? 'selected' : '' %>>Resolt</option>
+        <option value="No resolt" <%= incidencia.estat === 'No resolt' ? 'selected' : '' %>>No resolt</option>
       </select>
     </div>
-    <button type="submit" class="btn btn-primary">Actualitzar</button>
+
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary">Actualitzar</button>
+    </div>
   </form>
+</div>
+
 <%- include('../partials/footer') %>

@@ -5,7 +5,6 @@ const express = require('express');
 
 const router = express.Router();
 
-const Category = require('../models/Incidencia');
 const Incidencia = require('../models/Incidencia');
 
 

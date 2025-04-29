@@ -26,8 +26,16 @@
     </div>
 
     <button type="submit" class="btn btn-success">Crear Incidència</button>
-    <a href="/incidencies" class="btn btn-secondary ms-2">Cancel·lar</a>
+    <a href="/" class="btn btn-secondary ms-2">Cancel·lar</a>
   </form>
 </div>
+
+<script>
+  window.onload = function() {
+    // Desactivar els enllaços del header quan es carrega la vista
+    document.getElementById("projecte-link").style.pointerEvents = "none";
+    document.getElementById("incidencies-link").style.pointerEvents = "none";
+  }
+</script>
 
 <%- include('../partials/footer') %>

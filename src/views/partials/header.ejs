@@ -15,13 +15,13 @@
   <!-- Barra de navegación -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
-      <a class="navbar-brand" href="/">Projecte Incidencies</a>
+      <a class="navbar-brand" href="/" id="projecte-link">Projecte Incidencies</a>
       <div>
         <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link" href="/">Inici</a></li>
+
           <!-- Modificado el enlace para que active el formulario de contraseña -->
           <li class="nav-item">
-            <a class="nav-link" href="javascript:void(0)" onclick="showPasswordPrompt()">Incidencies (EJS)</a>
+            <a class="nav-link" href="javascript:void(0)" id="incidencies-link" onclick="showPasswordPrompt()">Incidencies (EJS)</a>
           </li>
         </ul>
       </div>
@@ -45,19 +45,26 @@
   </div>
 
   <script>
-    const correctPassword = "12345"; // Establece la contraseña correcta
+    const correctPassword = "12345";
 
-    // Muestra el formulario para la contraseña y oculta el contenido inicial
-    function showPasswordPrompt() {
-      document.getElementById("password-prompt").style.display = "block";
-      document.getElementById("main-content").style.display = "none"; // Oculta el contenido principal
+    // Verificar si ya se ha validado la contraseña
+    if (sessionStorage.getItem("accessGranted") === "true") {
+      document.getElementById("incidencies-link").style.pointerEvents = "none";
+      document.getElementById("projecte-link").style.pointerEvents = "none"; // Desactivar el enlace
     }
 
-    // Verifica la contraseña
+    function showPasswordPrompt() {
+      document.getElementById("password-prompt").style.display = "block";
+      document.getElementById("main-content").style.display = "none";
+      document.getElementById("incidencies-link").style.pointerEvents = "none";
+      document.getElementById("projecte-link").style.pointerEvents = "none"; // Desactivar el enlace
+    }
+
     function checkPassword() {
       const enteredPassword = document.getElementById("password").value;
       if (enteredPassword === correctPassword) {
-        window.location.href = "/incidencies"; // Redirige a la página protegida
+        sessionStorage.setItem("accessGranted", "true"); // Guardar en sessionStorage que el acceso fue concedido
+        window.location.href = "/incidencies";
       } else {
         document.getElementById("error-message").style.display = "block";
       }
