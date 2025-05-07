@@ -16,7 +16,7 @@
       </tr>
     </thead>
     <tbody>
-      <% incidencies.forEach(incidencia => { %>
+      <% incidencies.filter(incidencia => incidencia.estat === "No resolt").forEach(incidencia => { %>
         <tr>
           <td><%= incidencia.id %></td>
           <td><%= incidencia.descripcio %></td>
@@ -34,11 +34,14 @@
   </table>
 
   <!-- Botón para cerrar sesión y volver al inicio -->
-  <div class="text-center mt-4">
-    <button class="btn btn-danger" onclick="resetAccess()">Tancar sessió i tornar a l'inici</button>
+<div class="text-center mt-4">
+  <button class="btn btn-danger" onclick="resetAccess()">Tancar sessió i tornar a l'inici</button>
   </div>
 </div>
 
+<div class="text-center mt-4">
+  <a href="/actuacions" class="btn btn-secondary">Veure totes les actuacions</a>
+</div>
 <script>
   // Funció per desactivar els enllaços del header
   function disableHeaderLinks() {

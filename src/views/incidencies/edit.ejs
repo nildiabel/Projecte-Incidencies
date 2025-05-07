@@ -18,7 +18,6 @@
     <div class="mb-3">
       <label for="prioritat" class="form-label">Prioritat</label>
       <select id="prioritat" name="prioritat" class="form-select" required>
-        <option value="" disabled>Selecciona la prioritat</option>
         <option value="Alta" <%= incidencia.prioritat === 'Alta' ? 'selected' : '' %>>Alta</option>
         <option value="Mitjana" <%= incidencia.prioritat === 'Mitjana' ? 'selected' : '' %>>Mitjana</option>
         <option value="Baixa" <%= incidencia.prioritat === 'Baixa' ? 'selected' : '' %>>Baixa</option>
@@ -50,7 +49,6 @@
     <div class="mb-3">
       <label for="estat" class="form-label">Estat</label>
       <select id="estat" name="estat" class="form-select" required>
-        <option value="" disabled>Selecciona l'estat</option>
         <option value="Resolt" <%= incidencia.estat === 'Resolt' ? 'selected' : '' %>>Resolt</option>
         <option value="No resolt" <%= incidencia.estat === 'No resolt' ? 'selected' : '' %>>No resolt</option>
       </select>

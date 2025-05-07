@@ -27,12 +27,12 @@ const Incidencia = sequelize.define('Incidencia', {
   },
 
   prioritat: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('Baixa', 'Mitjana', 'Alta'),
     allowNull: true, 
   },
 
   estat: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('Resolt', 'No resolt'),
     allowNull: false,
     defaultValue: 'No resolt'
   }  
