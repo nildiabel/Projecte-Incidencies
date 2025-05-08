@@ -11,6 +11,11 @@ const Actuacio = sequelize.define("Actuacio", {
         autoIncrement: true,
     },
 
+    temps: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+
     id_incidencia: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -25,6 +30,7 @@ const Actuacio = sequelize.define("Actuacio", {
         type: DataTypes.STRING,
         allowNull: false,
     },
+
 });
 
 module.exports = Actuacio;

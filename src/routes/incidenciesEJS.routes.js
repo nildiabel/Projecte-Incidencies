@@ -19,6 +19,7 @@ router.get('/', async (req, res) => {
 
 // Form per crear una moto (GET)
 router.get('/new', async (req, res) => {
+    
     try {
         const departaments = await Departament.findAll();
         const tecnics = await Tecnic.findAll();
@@ -34,8 +35,15 @@ router.get('/new', async (req, res) => {
 router.post('/create', async (req, res) => {
     try {
         const { descripcio, id } = req.body;
-        await Incidencia.create({ descripcio, id_departament: id, id_tecnic: null, prioritat: null, estat: 'No resolt'});
-        return res.redirect('/');
+        await Incidencia.create({descripcio, id_departament: id, id_tecnic: null, prioritat: null, estat: 'No resolt'});
+        // Redirigir a la vista con success: true
+        const departaments = await Departament.findAll();
+        const tecnics = await Tecnic.findAll();
+        res.render('incidencies/new', {
+            success: true,    // Añadir la variable 'success'
+            departaments, 
+            tecnics
+        });
     } catch (error) {
         console.error('Error al crear incidencia:', error);
         return res.status(500).send('Error al crear la incidencia');

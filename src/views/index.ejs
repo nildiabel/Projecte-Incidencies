@@ -1,10 +1,64 @@
 <!-- src/views/index.ejs -->
-<%- include('partials/header', { title: 'Projecte Incidencies' }) %>
+<%- include('partials/header', { title: 'Projecte Incidències' }) %>
 
-<div id="main-content" class="container mt-4">
-  <h1>Benvingut al projecte de Incidencies!</h1>
-  <p>Aquesta és la pàgina d’inici, renderitzada amb EJS.</p>
-  <a class="btn btn-primary mb-3" href="/incidencies/new">Afegir Incidència</a>
+<div id="main-content" class="container mt-5">
+  <div class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-dark">Benvingut al <span class="text-primary">Projecte d’Incidències</span></h1>
+    <p class="lead text-secondary fw-semibold">Gestiona, visualitza i resol incidències de manera eficient i intuïtiva.</p>
+    <img style="height: 100px; border-radius: 50px;" src="/images/logo-incidencies-pedralbes.png" alt="logoincidencies">
+    <br>
+    <a class="btn btn-lg btn-primary mt-3 shadow" href="/incidencies/new">➕ Afegir Incidència</a>
+    
+  </div>
+
+  <div class="row text-center">
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">📋 Llistat d’Incidències</h5>
+          <p class="card-text text-muted">Consulta totes les incidències registrades i el seu estat actual.</p>
+          <button onclick="showPasswordPrompt()" class="btn btn-outline-primary">Veure Incidències</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">🛠️ Gestió d’Actuacions</h5>
+          <p class="card-text text-muted">Visualitza i afegeix actuacions realitzades sobre cada incidència.</p>
+          <button onclick="showPasswordPrompt()" class="btn btn-outline-primary">Veure Actuacions</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">👨‍🔧 Tècnics</h5>
+          <p class="card-text text-muted">Gestiona la informació dels tècnics encarregats de les incidències.</p>
+          <button onclick="showPasswordPrompt()" class="btn btn-outline-primary">Veure Tècnics</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script type="text/javascript">
+  (function(d, t) {
+      var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+      v.onload = function() {
+        window.voiceflow.chat.load({
+          verify: { projectID: '68089b1c3471dd67f6d121b0' },
+          url: 'https://general-runtime.voiceflow.com',
+          versionID: 'production',
+          voice: {
+            url: "https://runtime-api.voiceflow.com"
+          }
+        });
+      }
+      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+  })(document, 'script');
+</script>
 
 <%- include('partials/footer') %>

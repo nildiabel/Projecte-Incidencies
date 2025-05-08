@@ -34,6 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
+
 // Configuració EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -42,6 +43,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/incidencies', incidenciesRoutesEJS);
 app.use('/departaments', departamentsRoutesEJS);
 app.use('/actuacions', actuacionsRoutesEJS);
+
 
 // Ruta inicial
 app.get('/', (req, res) => {

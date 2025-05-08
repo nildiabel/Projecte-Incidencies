@@ -1,55 +1,64 @@
 <%- include('../partials/header', { title: 'Llista de categories' }) %>
 
-<div class="container mt-5">
-  <h1 class="mb-4 text-center">Llista de incidències</h1>
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-6 fw-bold">📋 Incidències pendents</h1>
+    <a href="/actuacions" class="btn btn-outline-primary">Veure actuacions</a>
+  </div>
 
-  <table class="table table-striped table-bordered">
-    <thead class="table-dark">
-      <tr>
-        <th>ID</th>
-        <th>Descripció</th>
-        <th>Departament</th>
-        <th>Tècnic</th>
-        <th>Prioritat</th>
-        <th>Estat</th>
-        <th>Accions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% incidencies.filter(incidencia => incidencia.estat === "No resolt").forEach(incidencia => { %>
-        <tr>
-          <td><%= incidencia.id %></td>
-          <td><%= incidencia.descripcio %></td>
-          <td><%= incidencia.Departament.nom_dpt %></td>
-          <td><%= incidencia.Tecnic && incidencia.Tecnic.nom ? incidencia.Tecnic.nom : 'Sin asignar' %></td>
-          <td><%= incidencia.prioritat %></td>
-          <td><%= incidencia.estat %></td>
-          <td>
-            <a href="/incidencies/<%= incidencia.id %>/edit" class="btn btn-warning btn-sm">Editar</a>
-            <a href="/incidencies/<%= incidencia.id %>/delete" class="btn btn-danger btn-sm">Eliminar</a>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
+  <div class="card shadow-sm rounded-4 border-0">
+    <div class="card-body">
+      <table class="table table-hover align-middle">
+        <thead class="table-light text-uppercase text-muted small">
+          <tr>
+            <th>ID</th>
+            <th>Descripció</th>
+            <th>Departament</th>
+            <th>Tècnic</th>
+            <th>Prioritat</th>
+            <th>Estat</th>
+            <th class="text-center">Accions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% incidencies.filter(incidencia => incidencia.estat === "No resolt").forEach(incidencia => { %>
+            <tr>
+              <td class="fw-semibold"><%= incidencia.id %></td>
+              <td><%= incidencia.descripcio %></td>
+              <td><%= incidencia.Departament.nom_dpt %></td>
+              <td><%= incidencia.Tecnic && incidencia.Tecnic.nom ? incidencia.Tecnic.nom : 'Sin assignar' %></td>
+              <td>
+                <% if (incidencia.prioritat === 'Alta') { %>
+                  <span class="badge bg-danger">Alta</span>
+                <% } else if (incidencia.prioritat === 'Mitjana') { %>
+                  <span class="badge bg-warning text-dark">Mitjana</span>
+                <% } else { %>
+                  <span class="badge bg-success">Baixa</span>
+                <% } %>
+              </td>
+              <td><span class="badge bg-secondary"><%= incidencia.estat %></span></td>
+              <td class="text-center">
+                <a href="/incidencies/<%= incidencia.id %>/edit" class="btn btn-sm btn-outline-warning me-1">✏️</a>
+                <a href="/incidencies/<%= incidencia.id %>/delete" class="btn btn-sm btn-outline-danger">🗑️</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <!-- Botón para cerrar sesión y volver al inicio -->
-<div class="text-center mt-4">
-  <button class="btn btn-danger" onclick="resetAccess()">Tancar sessió i tornar a l'inici</button>
+  <div class="text-center mt-4">
+    <button class="btn btn-danger" onclick="resetAccess()">🚪 Tancar sessió</button>
   </div>
 </div>
 
-<div class="text-center mt-4">
-  <a href="/actuacions" class="btn btn-secondary">Veure totes les actuacions</a>
-</div>
 <script>
-  // Funció per desactivar els enllaços del header
   function disableHeaderLinks() {
     document.getElementById("projecte-link").style.pointerEvents = "none";
     document.getElementById("incidencies-link").style.pointerEvents = "none";
   }
 
-  // Funció per resetar l'accés (per tancar sessió)
   function resetAccess() {
     sessionStorage.removeItem("accessGranted");
     window.location.href = "/";

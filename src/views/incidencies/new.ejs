@@ -1,40 +1,59 @@
 <%- include('../partials/header', { title: 'Afegir Incidència' }) %>
 
-<div class="container mt-4">
-  <h1 class="mb-4">Nova Incidència</h1>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow rounded-4">
+        <div class="card-body p-4">
+          <h2 class="card-title text-center mb-4">
+            <i class="bi bi-plus-circle-fill text-success me-2"></i>
+            Nova Incidència
+          </h2>
 
-  <form action="/incidencies/create" method="POST">
-    <div class="mb-3">
-      <label for="descripcio" class="form-label">Descripció</label>
-      <input
-        type="text"
-        id="descripcio"
-        name="descripcio"
-        class="form-control"
-        placeholder="Introdueix la descripció"
-        required
-      />
+          <form action="/incidencies/create" method="POST">
+            <div class="mb-3">
+              <label for="descripcio" class="form-label fw-semibold">Descripció</label>
+              <input
+                type="text"
+                id="descripcio"
+                name="descripcio"
+                class="form-control form-control-lg"
+                placeholder="Introdueix la descripció de la incidència"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label for="id" class="form-label fw-semibold">Departament</label>
+              <select name="id" id="id" class="form-select form-select-lg" required>
+                <option disabled selected value="">-- Selecciona un departament --</option>
+                <% departaments.forEach(departament => { %>
+                  <option value="<%= departament.id %>"><%= departament.nom_dpt %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <button type="submit" class="btn btn-success btn-lg w-50 me-2">
+                <i class="bi bi-check-circle me-1"></i> Crear
+              </button>
+              <a href="/" class="btn btn-outline-secondary btn-lg w-50 ms-2">
+                <i class="bi bi-x-circle me-1"></i> Cancel·lar
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-
-    <div class="mb-3">
-      <label for="id" class="form-label">Departament</label>
-      <select name="id" class="form-select">
-        <% departaments.forEach(departament => { %>
-          <option value="<%= departament.id %>"><%= departament.nom_dpt %></option>
-        <% }) %>
-      </select>
-    </div>
-
-    <button type="submit" class="btn btn-success">Crear Incidència</button>
-    <a href="/" class="btn btn-secondary ms-2">Cancel·lar</a>
-  </form>
+  </div>
 </div>
 
 <script>
   window.onload = function() {
-    // Desactivar els enllaços del header quan es carrega la vista
-    document.getElementById("projecte-link").style.pointerEvents = "none";
-    document.getElementById("incidencies-link").style.pointerEvents = "none";
+    const projectLink = document.getElementById("projecte-link");
+    const incidenciesLink = document.getElementById("incidencies-link");
+    if (projectLink) projectLink.style.pointerEvents = "none";
+    if (incidenciesLink) incidenciesLink.style.pointerEvents = "none";
   }
 </script>
 
