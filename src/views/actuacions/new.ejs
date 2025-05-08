@@ -1,0 +1,51 @@
+<%- include('../partials/header', { title: 'Nova Actuació' }) %>
+
+<div class="container">
+  <h1 class="mb-4 text-primary fw-bold">Nova Actuació</h1>
+
+  <form action="/actuacions/create" method="POST" class="card p-4 shadow">
+    <div class="mb-3">
+      <label for="descripcio_actuacio" class="form-label fw-semibold">Descripció</label>
+      <textarea name="descripcio_actuacio" id="descripcio_actuacio" class="form-control" rows="3" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="id_incidencia" class="form-label fw-semibold">Incidència</label>
+      <select name="id_incidencia" id="id_incidencia" class="form-select" required>
+        <option disabled selected value="">-- Selecciona una incidència --</option>
+        <% incidencies.forEach(incidencia => { %>
+          <option value="<%= incidencia.id %>">
+            <%= incidencia.descripcio %> (ID: <%= incidencia.id %>)
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="id_tecnic" class="form-label fw-semibold">Tècnic</label>
+      <select name="id_tecnic" id="id_tecnic" class="form-select" required>
+        <option disabled selected value="">-- Selecciona un tècnic --</option>
+        <% tecnics.forEach(tecnic => { %>
+          <option value="<%= tecnic.id %>">
+            <%= tecnic.nom %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="temps" class="form-label fw-semibold">Temps (minuts)</label>
+      <select name="temps" id="temps" class="form-select" required>
+        <% for (let i = 0; i <= 120; i += 5) { %>
+          <option value="<%= i %>"><%= i %> minuts</option>
+        <% } %>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Crear actuació</button>
+    <br>
+    <a href="/actuacions" class="btn btn-secondary mt-2">Cancel·lar</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

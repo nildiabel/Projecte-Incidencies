@@ -12,6 +12,7 @@
     <div class="mb-3">
       <label for="id_incidencia" class="form-label fw-semibold">Incidència</label>
       <select name="id_incidencia" id="id_incidencia" class="form-select" required>
+        <option disabled selected value="">-- Selecciona un departament --</option>
         <% incidencies.forEach(incidencia => { %>
           <option value="<%= incidencia.id %>" <%= actuacio.id_incidencia === incidencia.id ? 'selected' : '' %>>
             <%= incidencia.descripcio %> (ID: <%= incidencia.id %>)

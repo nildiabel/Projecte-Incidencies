@@ -63,6 +63,48 @@ router.post('/:id/update', async (req, res) => {
     res.status(500).send('Error al actualitzar l’actuació'+error.message);
   }
 });
+
+router.get('/new', async (req, res) => {
+    try {
+      const incidencies = await Incidencia.findAll();
+      const tecnics = await Tecnic.findAll();
+  
+      res.render('actuacions/new', {
+        incidencies,
+        tecnics,
+      });
+    } catch (error) {
+      console.error('Error al carregar el formulari de nova actuació:', error);
+      res.status(500).send('Error del servidor');
+    }
+  });
+
+  router.post('/create', async (req, res) => {
+    try {
+      const { descripcio_actuacio, id_incidencia, id_tecnic, temps } = req.body;
+  
+      await Actuacio.create({
+        descripcio_actuacio,
+        id_incidencia: parseInt(id_incidencia),
+        id_tecnic: parseInt(id_tecnic),
+        temps: parseInt(temps),
+      });
+  
+      res.redirect('/actuacions');
+    } catch (error) {
+      console.error('Error al crear l’actuació:', error);
+      res.status(500).send('Error al crear l’actuació: ' + error.message);
+    }
+  });
+  
+
+  router.get('/new', async (req, res) => {
+    const incidencies = await Incidencia.findAll();
+    const tecnics = await Tecnic.findAll();
+    res.render('actuacions/new', { incidencies, tecnics });
+  });
+  
+  
 // Exportar el router
 module.exports = router;
 
