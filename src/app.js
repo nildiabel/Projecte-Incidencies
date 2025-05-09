@@ -106,6 +106,12 @@ const port = process.env.PORT || 3000;
     if (!existingIncidencies) {
       await Incidencia.bulkCreate([
       { id_departament: 1, id_tecnic: 1, descripcio: 'Error en la impressora', prioritat: 'Alta', estat: 'No resolt' },
+      { id_departament: 2, id_tecnic: 2, descripcio: 'Error de xarxa', prioritat: 'Alta', estat: 'No resolt' },
+      { id_departament: 3, id_tecnic: 3, descripcio: 'Error en la página web', prioritat: 'Mitjana', estat: 'No resolt' },
+      { id_departament: 4, id_tecnic: 4, descripcio: 'Cablejat desordenat', prioritat: 'Baixa', estat: 'No resolt' },
+      { id_departament: 5, id_tecnic: 5, descripcio: 'Pantalla en mal estat', prioritat: 'Mitjana', estat: 'No resolt' },
+
+
       ]);
       console.log('Incidencia inicials creats');
     }
@@ -114,8 +120,21 @@ const port = process.env.PORT || 3000;
     if (!existingActuacions) {
       await Actuacio.bulkCreate([
       { id_incidencia: 1, id_tecnic: 1, descripcio_actuacio: 'Revisió inicial' },
-      { id_incidencia: 1, id_tecnic: 2, descripcio_actuacio: 'Resolució de l\'error' },
-      { id_incidencia: 1, id_tecnic: 3, descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 1, id_tecnic: 1, descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 1, id_tecnic: 1, descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 2, id_tecnic: 2, descripcio_actuacio: 'Revisió inicial' },
+      { id_incidencia: 2, id_tecnic: 2, descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 2, id_tecnic: 2, descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 3, id_tecnic: 3, descripcio_actuacio: 'Revisió inicial' },
+      { id_incidencia: 3, id_tecnic: 3, descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 3, id_tecnic: 3, descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 4, id_tecnic: 4, descripcio_actuacio: 'Revisió inicial' },
+      { id_incidencia: 4, id_tecnic: 4, descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 4, id_tecnic: 4, descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 5, id_tecnic: 5, descripcio_actuacio: 'Revisió inicial' },
+      { id_incidencia: 5, id_tecnic: 5, descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 5, id_tecnic: 5, descripcio_actuacio: 'Verificació final' },
+      
       ]);
       console.log('Actuacions inicials creades');
     }
