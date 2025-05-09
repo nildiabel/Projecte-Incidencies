@@ -18,6 +18,7 @@
     <div class="mb-3">
       <label for="prioritat" class="form-label">Prioritat</label>
       <select id="prioritat" name="prioritat" class="form-select" required>
+        <option disabled selected value="">-- Selecciona una Prioritat --</option>
         <option value="Alta" <%= incidencia.prioritat === 'Alta' ? 'selected' : '' %>>Alta</option>
         <option value="Mitjana" <%= incidencia.prioritat === 'Mitjana' ? 'selected' : '' %>>Mitjana</option>
         <option value="Baixa" <%= incidencia.prioritat === 'Baixa' ? 'selected' : '' %>>Baixa</option>
@@ -27,6 +28,7 @@
     <div class="mb-3">
       <label for="departament_id" class="form-label">Departament</label>
       <select id="departament_id" name="departament_id" class="form-select" required>
+        <option disabled selected value="">-- Selecciona un Departament --</option>
         <% departaments.forEach(departament => { %>
           <option value="<%= departament.id %>" <%= departament.id === incidencia.departament_id ? 'selected' : '' %>>
             <%= departament.nom_dpt %>
@@ -38,6 +40,7 @@
     <div class="mb-3">
       <label for="tecnic_id" class="form-label">Tècnic</label>
       <select id="tecnic_id" name="tecnic_id" class="form-select" required>
+          <option disabled selected value="">-- Selecciona un Tècnic --</option>
         <% tecnics.forEach(tecnic => { %>
           <option value="<%= tecnic.id %>" <%= tecnic.id === incidencia.tecnic_id ? 'selected' : '' %>>
             <%= tecnic.nom %>

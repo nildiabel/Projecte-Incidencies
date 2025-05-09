@@ -10,6 +10,12 @@
     <div class="text-center mb-5">
       <a class="btn btn-lg btn-primary mt-3 shadow" href="/actuacions/new">➕ Afegir Actuació</a>
     </div>
+
+    <form class="mb-4" onsubmit="event.preventDefault();">
+      <label for="searchId" class="form-label fw-semibold">Filtrar per ID d'incidència:</label>
+      <input type="number" id="searchId" class="form-control" placeholder="Filtra por número de ID" oninput="filterByIncidenciaId()">
+    </form>
+
   <div class="card shadow-sm rounded-4 border-0">
     <div class="card-body">
       <table class="table align-middle table-hover">
@@ -23,7 +29,7 @@
         </thead>
         <tbody>
           <% actuacions.forEach(actuacio => { %>
-            <tr>
+            <tr data-incidencia-id="<%= actuacio.id_incidencia %>">
               <td class="fw-semibold"><%= actuacio.id %></td>
               <td><%= actuacio.descripcio_actuacio %></td>
               <td><%= actuacio.temps %></td>
@@ -42,5 +48,22 @@
     </div>
   </div>
 </div>
+
+
+<script>
+  function filterByIncidenciaId() {
+    const input = document.getElementById("searchId").value.trim();
+    const rows = document.querySelectorAll("tbody tr");
+
+    rows.forEach(row => {
+      const incidenciaId = row.dataset.incidenciaId;
+      if (!input || incidenciaId === input) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+</script>
 
 <%- include('../partials/footer') %>
