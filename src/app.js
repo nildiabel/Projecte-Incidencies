@@ -9,6 +9,7 @@ const Incidencia = require('./models/Incidencia');
 const Departament = require('./models/Departament');
 const Tecnic = require('./models/Tecnic');
 const Actuacio = require('./models/Actuacio');
+const Tipo = require('./models/Tipo');
 
 // Relacions
 Departament.hasMany(Incidencia, { foreignKey: 'id_departament', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
@@ -144,5 +145,6 @@ const port = process.env.PORT || 3000;
     });
   } catch (error) {
     console.error("Error a l'inici:", error);
-  }
-})();
+  }})
+  
+();
