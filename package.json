@@ -1,7 +1,7 @@
 {
   "name": "incidencies_hcordoba_ndiaz",
   "version": "1.0.0",
-  "description": "",
+  "description": "<h1>Hola!​👋​🚀​</h1> <h2>Benvinguts al Gestor d'Incidències!🛠️​</h2>",
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
@@ -25,6 +25,7 @@
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
+    "mongodb": "6.16",
     "mysql2": "^3.14.0",
     "sequelize": "^6.37.7"
   },
