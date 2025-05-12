@@ -1,10 +1,10 @@
 services:
 
-  motos-app:
+  incidencies-app:
 
     build: .
 
-    container_name: motos-project-1DAM
+    container_name: incidencies-project-1DAM
 
     env_file:
 
@@ -28,7 +28,7 @@ services:
 
     image: mysql:5.7
 
-    container_name: motos-db-container
+    container_name: incidencies-db-container
 
     env_file:
 
@@ -50,7 +50,7 @@ services:
 
     image: adminer
 
-    container_name: motos-adminer
+    container_name: incidencies-adminer
 
     depends_on:
 
