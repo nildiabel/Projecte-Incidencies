@@ -8,7 +8,7 @@ const Incidencia = require('./models/Incidencia');
 const Departament = require('./models/Departament');
 const Tecnic = require('./models/Tecnic');
 const Actuacio = require('./models/Actuacio');
-const Tipo = require('./models/Tipo');
+const Tipu = require('./models/Tipu');
 
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
@@ -50,6 +50,9 @@ Actuacio.belongsTo(Incidencia, { foreignKey: 'id_incidencia', onUpdate: 'CASCADE
 
 Tecnic.hasMany(Actuacio, { foreignKey: 'id_tecnic', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Actuacio.belongsTo(Tecnic, { foreignKey: 'id_tecnic', onUpdate: 'CASCADE' });
+
+Tipu.hasMany(Incidencia, { foreignKey: 'id_tipus', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Incidencia.belongsTo(Tipu, { foreignKey: 'id_tipus', onUpdate: 'CASCADE' });
 
 
 // Rutes
@@ -130,14 +133,32 @@ const port = process.env.PORT || 3000;
       console.log('Tècnics inicials creats');
     }
 
+    const existingTipu = await Tipu.findOne();
+    if (!existingTipu) {
+      await Tipu.bulkCreate([
+      { nom_tipus: 'Hardware' },
+      { nom_tipus: 'Software' },
+      { nom_tipus: 'Xarxa' },
+      { nom_tipus: 'Impressió' },
+      { nom_tipus: 'Seguretat' },
+      { nom_tipus: 'Configuració' },
+      { nom_tipus: 'Actualització' },
+      { nom_tipus: 'Manteniment' },
+      { nom_tipus: 'Suport tècnic' },
+      { nom_tipus: 'Altres' },
+      ]);
+      console.log('Tipus de incidencies inicials creats');
+    }
+
+
     const existingIncidencies = await Incidencia.findOne();
     if (!existingIncidencies) {
       await Incidencia.bulkCreate([
-      { id_departament: 1, id_tecnic: 1, descripcio: 'Error en la impressora', prioritat: 'Alta', estat: 'No resolt' },
-      { id_departament: 2, id_tecnic: 2, descripcio: 'Error de xarxa', prioritat: 'Alta', estat: 'No resolt' },
-      { id_departament: 3, id_tecnic: 3, descripcio: 'Error en la página web', prioritat: 'Mitjana', estat: 'No resolt' },
-      { id_departament: 4, id_tecnic: 4, descripcio: 'Cablejat desordenat', prioritat: 'Baixa', estat: 'No resolt' },
-      { id_departament: 5, id_tecnic: 5, descripcio: 'Pantalla en mal estat', prioritat: 'Mitjana', estat: 'No resolt' },
+      { id_departament: 1, id_tecnic: 1, id_tipus: 1, descripcio: 'Error en la impressora', prioritat: 'Alta', estat: 'No resolt' },
+      { id_departament: 2, id_tecnic: 2, id_tipus: 2, descripcio: 'Error de xarxa', prioritat: 'Alta', estat: 'No resolt' },
+      { id_departament: 3, id_tecnic: 3, id_tipus: 3, descripcio: 'Error en la página web', prioritat: 'Mitjana', estat: 'No resolt' },
+      { id_departament: 4, id_tecnic: 4, id_tipus: 4, descripcio: 'Cablejat desordenat', prioritat: 'Baixa', estat: 'No resolt' },
+      { id_departament: 5, id_tecnic: 5, id_tipus: 5, descripcio: 'Pantalla en mal estat', prioritat: 'Mitjana', estat: 'No resolt' },
 
 
       ]);

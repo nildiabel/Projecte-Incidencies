@@ -13,6 +13,7 @@
           <tr>
             <th>ID</th>
             <th>Descripció</th>
+            <th>Tipus d'incidencia</th>
             <th>Departament</th>
             <th>Tècnic</th>
             <th>Prioritat</th>
@@ -25,6 +26,7 @@
             <tr>
               <td class="fw-semibold"><%= incidencia.id %></td>
               <td><%= incidencia.descripcio %></td>
+              <td><%= incidencia.Tipu.nom_tipus %></td>
               <td><%= incidencia.Departament.nom_dpt %></td>
               <td><%= incidencia.Tecnic && incidencia.Tecnic.nom ? incidencia.Tecnic.nom : 'Sin assignar' %></td>
               <td>

@@ -19,7 +19,12 @@ const Incidencia = sequelize.define('Incidencia', {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  
+
+  id_tipus: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+
   descripcio: {
     type: DataTypes.STRING,
     allowNull: false,
