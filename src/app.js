@@ -1,41 +1,30 @@
 // src/app.js
 const express = require('express');
+const app = express();
 require('dotenv').config();
 const sequelize = require('./db');
 const path = require('path');
+
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 const Incidencia = require('./models/Incidencia');
 const Departament = require('./models/Departament');
 const Tecnic = require('./models/Tecnic');
 const Actuacio = require('./models/Actuacio');
 const Tipu = require('./models/Tipu');
+const logsRoutes = require('./routes/logsEJS.routes');
+app.use('/logs', logsRoutes);
+const adminRoutes = require('./routes/adminEJS.routes');
+app.use('/', adminRoutes);
 
+// app.js
+const { connectMongo } = require('./mongo');
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://a18hugcorcob:<Holapedralbes_01>@cluster0.yoo2cak.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// Conexión a MongoDB
+connectMongo();
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
 
 
 // Relacions
@@ -51,16 +40,15 @@ Actuacio.belongsTo(Incidencia, { foreignKey: 'id_incidencia', onUpdate: 'CASCADE
 Tecnic.hasMany(Actuacio, { foreignKey: 'id_tecnic', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Actuacio.belongsTo(Tecnic, { foreignKey: 'id_tecnic', onUpdate: 'CASCADE' });
 
-Tipu.hasMany(Incidencia, { foreignKey: 'id_tipus', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Tipu.hasMany(Actuacio, { foreignKey: 'id_tipus', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Incidencia.belongsTo(Tipu, { foreignKey: 'id_tipus', onUpdate: 'CASCADE' });
-
 
 // Rutes
 const incidenciesRoutesEJS = require('./routes/incidenciesEJS.routes');
 const departamentsRoutesEJS = require('./routes/departamentsEJS.routes');
 const actuacionsRoutesEJS = require('./routes/actuacionsEJS.routes');
 
-const app = express();
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
@@ -74,7 +62,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/incidencies', incidenciesRoutesEJS);
 app.use('/departaments', departamentsRoutesEJS);
 app.use('/actuacions', actuacionsRoutesEJS);
-
 
 // Ruta inicial
 app.get('/', (req, res) => {
@@ -150,7 +137,6 @@ const port = process.env.PORT || 3000;
       console.log('Tipus de incidencies inicials creats');
     }
 
-
     const existingIncidencies = await Incidencia.findOne();
     if (!existingIncidencies) {
       await Incidencia.bulkCreate([
@@ -159,6 +145,7 @@ const port = process.env.PORT || 3000;
       { id_departament: 3, id_tecnic: 3, id_tipus: 3, descripcio: 'Error en la página web', prioritat: 'Mitjana', estat: 'No resolt' },
       { id_departament: 4, id_tecnic: 4, id_tipus: 4, descripcio: 'Cablejat desordenat', prioritat: 'Baixa', estat: 'No resolt' },
       { id_departament: 5, id_tecnic: 5, id_tipus: 5, descripcio: 'Pantalla en mal estat', prioritat: 'Mitjana', estat: 'No resolt' },
+
 
 
       ]);

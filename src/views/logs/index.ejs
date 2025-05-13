@@ -1,0 +1,27 @@
+<%- include('../partials/header', { title: 'Projecte Incidències' }) %>
+
+<div class="container mt-4">
+  <h1 class="mb-4">Logs de Acceso</h1>
+  <table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th>URL</th>
+        <th>Método</th>
+        <th>Fecha</th>
+        <th>User-Agent</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% logs.forEach(log => { %>
+        <tr>
+          <td><%= log.url %></td>
+          <td><%= log.method %></td>
+          <td><%= new Date(log.timestamp).toLocaleString() %></td>
+          <td><%= log.userAgent %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>
