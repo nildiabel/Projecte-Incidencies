@@ -26,30 +26,6 @@
     </div>
 
     <div class="mb-3">
-      <label for="departament_id" class="form-label">Departament</label>
-      <select id="departament_id" name="departament_id" class="form-select" required>
-        <option disabled selected value="">-- Selecciona un Departament --</option>
-        <% departaments.forEach(departament => { %>
-          <option value="<%= departament.id %>" <%= departament.id === incidencia.departament_id ? 'selected' : '' %>>
-            <%= departament.nom_dpt %>
-          </option>
-        <% }) %>
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label for="tipus_id" class="form-label">Tipus</label>
-      <select id="tipus_id" name="tipus_id" class="form-select" required>
-        <option disabled selected value="">-- Selecciona el Tipus d'incidencia --</option>
-        <% tipus.forEach(tipu => { %>
-          <option value="<%= tipu.id %>" <%= tipu.id === tipu.tipus_id ? 'selected' : '' %>>
-            <%= tipu.nom_tipus %>
-          </option>
-        <% }) %>
-      </select>
-    </div>
-
-    <div class="mb-3">
       <label for="tecnic_id" class="form-label">Tècnic</label>
       <select id="tecnic_id" name="tecnic_id" class="form-select" required>
           <option disabled selected value="">-- Selecciona un Tècnic --</option>

@@ -39,26 +39,26 @@ run().catch(console.dir);
 
 
 // Relacions
-Departament.hasMany(Incidencia, { foreignKey: 'id_departament', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Departament.hasMany(Incidencia, { foreignKey: 'id_departament', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
 Incidencia.belongsTo(Departament, { foreignKey: 'id_departament', onUpdate: 'CASCADE' });
 
-Tecnic.hasMany(Incidencia, { foreignKey: 'id_tecnic', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Tecnic.hasMany(Incidencia, { foreignKey: 'id_tecnic', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
 Incidencia.belongsTo(Tecnic, { foreignKey: 'id_tecnic', onUpdate: 'CASCADE' });
 
 Incidencia.hasMany(Actuacio, { foreignKey: 'id_incidencia', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 Actuacio.belongsTo(Incidencia, { foreignKey: 'id_incidencia', onUpdate: 'CASCADE' });
 
-Tecnic.hasMany(Actuacio, { foreignKey: 'id_tecnic', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Tecnic.hasMany(Actuacio, { foreignKey: 'id_tecnic', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
 Actuacio.belongsTo(Tecnic, { foreignKey: 'id_tecnic', onUpdate: 'CASCADE' });
 
-Tipu.hasMany(Incidencia, { foreignKey: 'id_tipus', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Tipu.hasMany(Incidencia, { foreignKey: 'id_tipus', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
 Incidencia.belongsTo(Tipu, { foreignKey: 'id_tipus', onUpdate: 'CASCADE' });
 
 
 // Rutes
 const incidenciesRoutesEJS = require('./routes/incidenciesEJS.routes');
-const departamentsRoutesEJS = require('./routes/departamentsEJS.routes');
 const actuacionsRoutesEJS = require('./routes/actuacionsEJS.routes');
+const tecnicsRoutesEJS = require('./routes/tecnicsEJS.routes');
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -72,8 +72,8 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Rutes EJS
 app.use('/incidencies', incidenciesRoutesEJS);
-app.use('/departaments', departamentsRoutesEJS);
 app.use('/actuacions', actuacionsRoutesEJS);
+app.use('/tecnics', tecnicsRoutesEJS);
 
 
 // Ruta inicial

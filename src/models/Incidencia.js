@@ -12,7 +12,7 @@ const Incidencia = sequelize.define('Incidencia', {
 
   id_departament: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true ,
   },
 
   id_tecnic: {

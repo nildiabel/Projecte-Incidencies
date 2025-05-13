@@ -24,9 +24,9 @@ router.get('/new', async (req, res) => {
     try {
         const departaments = await Departament.findAll();
         const tecnics = await Tecnic.findAll();
-        const tipus = await Tipu.findAll();
+        const tipus_const = await Tipu.findAll();
 
-        res.render('incidencies/new', { departaments, tecnics, tipus });
+        res.render('incidencies/new', { departaments, tecnics, tipus_const });
     } catch (error) {
         console.error('Error al recuperar els departaments:', error);
         res.status(500).send('Error al recuperar els departaments');
@@ -36,18 +36,18 @@ router.get('/new', async (req, res) => {
 // Crear incidencia (POST)
 router.post('/create', async (req, res) => {
     try {
-        const { descripcio, id, tipu } = req.body;
-        await Incidencia.create({descripcio, id_departament: id, id_tecnic: null, id_tipus: tipu, prioritat: null, estat: 'No resolt'});
+        const { descripcio, id, tipus } = req.body;
+        await Incidencia.create({descripcio, id_departament: id, id_tecnic: null, id_tipus: tipus, prioritat: null, estat: 'No resolt'});
         // Redirigir a la vista con success: true
         const departaments = await Departament.findAll();
         const tecnics = await Tecnic.findAll();
-        const tipus   = await Tipu.findAll();
+        const tipus_const   = await Tipu.findAll();
 
         res.render('incidencies/new', {
             success: true,    // Añadir la variable 'success'
             departaments, 
             tecnics, 
-            tipus
+            tipus_const
         });
     } catch (error) {
         console.error('Error al crear incidencia:', error);
@@ -76,15 +76,13 @@ router.get('/:id/edit', async (req, res) => {
   // Actualitzar incidència (POST)
 router.post('/:id/update', async (req, res) => {
   try {
-    const { descripcio, prioritat, departament_id, tecnic_id, tipus_id, estat } = req.body;
+    const { descripcio, prioritat, tecnic_id, estat } = req.body;
     const incidencia = await Incidencia.findByPk(req.params.id);
     if (!incidencia) return res.status(404).send('Incidència no trobada');
 
     incidencia.descripcio = descripcio;
     incidencia.prioritat = prioritat;
-    incidencia.id_departament = parseInt(departament_id);
     incidencia.id_tecnic = parseInt(tecnic_id);
-    incidencia.id_tipus = parseInt(tipus_id);
     incidencia.estat = estat;
 
     await incidencia.save();
