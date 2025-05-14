@@ -1,0 +1,17 @@
+<%- include('../partials/header', { title: 'Afegir Tècnic' }) %>
+
+<div class="container py-5">
+  <h1 class="mb-4">➕ Afegir nou tècnic</h1>
+
+  <form action="/tecnics/create" method="POST">
+    <div class="mb-3">
+      <label for="nom" class="form-label">Nom del tècnic</label>
+      <input type="text" class="form-control" id="nom" name="nom" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">💾 Desa</button>
+    <a href="/tecnics" class="btn btn-secondary">↩️ Cancel·la</a>
+  </form>
+</div>
+
+<%- include('../partials/footer') %>

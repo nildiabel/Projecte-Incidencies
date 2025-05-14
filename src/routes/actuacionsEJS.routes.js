@@ -105,6 +105,19 @@ router.get('/new', async (req, res) => {
   });
   
   
+// Eliminar actuació (POST)
+router.post('/:id/delete', async (req, res) => {
+    try {
+        const actuacio = await Actuacio.findByPk(req.params.id);
+        if (!actuacio) return res.status(404).send('Actuació no trobada');
+
+        await actuacio.destroy();
+        res.redirect('/actuacions');
+    } catch (error) {
+        console.error('Error al eliminar l’actuació:', error);
+        res.status(500).send('Error al eliminar l’actuació');
+    }
+});
 // Exportar el router
 module.exports = router;
 

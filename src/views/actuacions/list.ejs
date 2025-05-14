@@ -37,9 +37,11 @@
                 <a href="/actuacions/<%= actuacio.id %>/edit" class="btn btn-sm btn-outline-warning me-1">
                   ✏️ Editar
                 </a>
-                <a href="/actuacions/<%= actuacio.id %>/delete" class="btn btn-sm btn-outline-danger">
-                  🗑️ Eliminar
-                </a>
+                <form action="/actuacions/<%= actuacio.id %>/delete" method="POST" class="d-inline">
+                  <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Segur que vols eliminar aquesta actuació?')">
+                    🗑️ Eliminar
+                  </button>
+                </form>  
               </td>
             </tr>
           <% }) %>

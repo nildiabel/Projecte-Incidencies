@@ -37,7 +37,7 @@
               <label for="tipus" class="form-label fw-semibold">Tipus</label>
               <select name="tipus" id="tipus" class="form-select form-select-lg" required>
               <option disabled selected value="">-- Selecciona un tipus --</option>
-              <% tipus.forEach(tipusItem => { %>
+              <% tipus_const.forEach(tipusItem => { %>
                 <option value="<%= tipusItem.id %>"><%= tipusItem.nom_tipus %></option>
               <% }) %>
               </select>

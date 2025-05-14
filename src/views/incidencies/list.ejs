@@ -41,7 +41,7 @@
               <td><span class="badge bg-secondary"><%= incidencia.estat %></span></td>
               <td class="text-center">
                 <a href="/incidencies/<%= incidencia.id %>/edit" class="btn btn-sm btn-outline-warning me-1">✏️</a>
-                <a href="/incidencies/<%= incidencia.id %>/delete" class="btn btn-sm btn-outline-danger">🗑️</a>
+                <a href="/incidencies/<%= incidencia.id %>/delete" class="btn btn-sm btn-outline-danger" onclick="return confirm('Estàs segur que vols eliminar aquesta incidència?');">🗑️</a>
               </td>
             </tr>
           <% }) %>
