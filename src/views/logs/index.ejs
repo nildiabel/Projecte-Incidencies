@@ -1,27 +1,93 @@
 <%- include('../partials/header', { title: 'Projecte Incidències' }) %>
 
-<div class="container mt-4">
-  <h1 class="mb-4">Logs de Acceso</h1>
-  <table class="table table-bordered table-striped">
-    <thead class="thead-dark">
-      <tr>
-        <th>URL</th>
-        <th>Método</th>
-        <th>Fecha</th>
-        <th>User-Agent</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% logs.forEach(log => { %>
-        <tr>
-          <td><%= log.url %></td>
-          <td><%= log.method %></td>
-          <td><%= new Date(log.timestamp).toLocaleString() %></td>
-          <td><%= log.userAgent %></td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold text-primary">📄 Logs de Acceso</h1>
+    <button id="reloadBtn" class="btn btn-outline-primary btn-lg shadow-sm d-flex align-items-center gap-2">
+      <i class="bi bi-arrow-clockwise"></i>
+      <span>Actualizar</span>
+    </button>
+  </div>
+
+  <div class="card shadow">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>🌐URL</th>
+              <th>⚙️Método</th>
+              <th>📅Fecha</th>
+              <th>🧭User-Agent</th>
+            </tr>
+          </thead>
+          <tbody id="logTableBody">
+            <% logs.forEach(log => { 
+              let badgeColor = 'secondary';
+              if (log.method === 'GET') {
+                badgeColor = 'success';
+              } else if (log.method === 'POST') {
+                badgeColor = 'primary';
+              } else if (log.method === 'PUT') {
+                badgeColor = 'warning';
+              } else if (log.method === 'DELETE') {
+                badgeColor = 'danger';
+              }
+            %>
+              <tr>
+                <td><code><%= log.url %></code></td>
+                <td><span class="badge bg-<%= badgeColor %>"><%= log.method %></span></td>
+                <td><%= new Date(log.timestamp).toLocaleString() %></td>
+                <td class="text-break"><%= log.userAgent %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%- include('../partials/footer') %>
+
+<script>
+  const reloadBtn = document.getElementById('reloadBtn');
+  const logsTbody = document.getElementById('logTableBody');
+
+  reloadBtn.addEventListener('click', async () => {
+    const originalHTML = reloadBtn.innerHTML;
+    reloadBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Cargando...';
+    reloadBtn.disabled = true;
+
+    try {
+      const response = await fetch('/logs/api');
+      const logs = await response.json();
+
+      logsTbody.innerHTML = '';
+
+      logs.forEach(log => {
+        const row = document.createElement('tr');
+
+        let badgeColor = 'secondary';
+        if (log.method === 'GET') badgeColor = 'success';
+        else if (log.method === 'POST') badgeColor = 'primary';
+        else if (log.method === 'PUT') badgeColor = 'warning';
+        else if (log.method === 'DELETE') badgeColor = 'danger';
+
+        row.innerHTML = `
+          <td><code>${log.url}</code></td>
+          <td><span class="badge bg-${badgeColor}">${log.method}</span></td>
+          <td>${new Date(log.timestamp).toLocaleString()}</td>
+          <td class="text-break">${log.userAgent}</td>
+        `;
+        logsTbody.appendChild(row);
+      });
+
+    } catch (error) {
+      console.error('Error al actualizar los logs:', error);
+    }
+
+    reloadBtn.innerHTML = originalHTML;
+    reloadBtn.disabled = false;
+  });
+</script>

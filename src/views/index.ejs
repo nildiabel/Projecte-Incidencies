@@ -1,7 +1,7 @@
 <!-- src/views/index.ejs -->
 <%- include('partials/header', { title: 'Projecte Incidències' }) %>
 <!-- Contenido principal -->
-<div id="main-content" class="container mt-5">
+<div id="main-content" class="container mt-5 fade-in">
   <div class="text-center mb-5">
     <h1 class="display-4 fw-bold text-dark">Benvingut al <span class="text-primary">Projecte d’Incidències</span></h1>
     <p class="lead text-secondary fw-semibold">Gestiona, visualitza i resol incidències de manera eficient i intuïtiva.</p>
@@ -70,5 +70,50 @@
 </div>
 </div>
 
+<script>
+  document.addEventListener('click', (e) => {
+    const url = window.location.pathname;
+    const timestamp = new Date().toISOString();
+    const userAgent = navigator.userAgent;
+
+    fetch('/logs/click', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url, timestamp, userAgent }),
+    }).catch(err => console.error('Error enviando clic:', err));
+  });
+</script>
+
+<!-- Estilos personalizados -->
+<style>
+  .transition-hover:hover {
+    transform: translateY(-4px);
+    transition: all 0.3s ease;
+    box-shadow: 0 1rem 1.5rem rgba(0, 123, 255, 0.15);
+  }
+
+  .fade-in {
+    animation: fadeIn 0.8s ease-in-out both;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+ 
+</style>
 
 <%- include('partials/footer') %>
+
+
+
+

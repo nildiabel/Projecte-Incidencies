@@ -16,7 +16,9 @@
             <th>Tipus d'incidencia</th>
             <th>Departament</th>
             <th>Tècnic</th>
-            <th>Prioritat</th>
+            <th>Prioritat
+              <button class="btn btn-sm btn-link p-0 ms-1" onclick="ordenarPrioritat()">🔽</button>
+            </th>
             <th>Estat</th>
             <th class="text-center">Accions</th>
           </tr>
@@ -64,6 +66,30 @@
   function resetAccess() {
     sessionStorage.removeItem("accessGranted");
     window.location.href = "/";
+  }
+</script>
+
+
+<script>
+  let ordreAscendent = true;
+
+  function ordenarPrioritat() {
+    const files = Array.from(document.querySelectorAll('tbody tr'));
+    
+    files.sort((a, b) => {
+      const valorA = a.querySelector('td:nth-child(6)').innerText.trim();
+      const valorB = b.querySelector('td:nth-child(6)').innerText.trim();
+
+      const prioritats = { 'Alta': 3, 'Mitjana': 2, 'Baixa': 1 };
+
+      const comparacio = prioritats[valorA] - prioritats[valorB];
+      return ordreAscendent ? comparacio : -comparacio;
+    });
+
+    const tbody = document.querySelector('tbody');
+    files.forEach(fila => tbody.appendChild(fila));
+
+    ordreAscendent = !ordreAscendent;
   }
 </script>
 

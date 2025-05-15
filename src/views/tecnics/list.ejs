@@ -23,7 +23,10 @@
                     <h5>🆔 Incidència <%= incidencia.id %> - <%= incidencia.descripcio %></h5>
                   </div>
                   <div>
-                    <a href="/incidencies/<%= incidencia.id %>/delete" class="btn btn-sm btn-outline-danger" onclick="return confirm('Estàs segur que vols eliminar aquesta incidència?');">🗑️ Eliminar</a>
+                    <!-- Botón de eliminar con modal -->
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModalIncidencia<%= incidencia.id %>">
+                      🗑️ Eliminar
+                    </button>
                   </div>
                 </div>
 
@@ -39,11 +42,9 @@
                         </div>
                         <div class="mt-2">
                           <a href="/actuacions/<%= actuacio.id %>/edit" class="btn btn-sm btn-outline-warning">✏️ Editar</a>
-                          <form action="/actuacions/<%= actuacio.id %>/delete" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Segur que vols eliminar aquesta actuació?')">
-                              🗑️ Eliminar
-                            </button>
-                          </form>
+                          <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModalActuacio<%= actuacio.id %>">
+                            🗑️ Eliminar
+                          </button>
                         </div>
                       </li>
                     <% }) %>
@@ -57,13 +58,76 @@
             <% } %>
           </div>
         </div>
-        <!-- Botó per eliminar tècnic (inicialment ocult) -->
-        <div class="text-center mt-3 mb-4 delete-btn" style="display: none;">
-          <form action="/tecnics/<%= tecnic.id %>/delete" method="POST" class="d-inline">
-            <button type="submit" class="btn btn-danger btn-sm" style="border-radius: 20px; padding: 8px 15px;" onclick="return confirm('Estàs segur que vols eliminar aquest tècnic? Aquesta acció no es pot desfer.')">
-              <i class="fas fa-trash-alt"></i> Eliminar
-            </button>
-          </form>
+
+        <!-- Botón de eliminar técnico -->
+        <div class="text-center mt-3 mb-4 delete-btn">
+          <button type="button" class="btn btn-outline-danger btn-sm px-4 py-2 fw-semibold rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModalTecnic<%= tecnic.id %>">
+            🗑️ Eliminar tècnic
+          </button>
+        </div>
+
+        <!-- Modals de confirmació -->
+        <% tecnic.Incidencia.forEach(incidencia => { %>
+          <!-- Modal eliminar incidència -->
+          <div class="modal fade" id="deleteModalIncidencia<%= incidencia.id %>" tabindex="-1" aria-labelledby="deleteModalLabelIncidencia<%= incidencia.id %>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content border-0 rounded-4 shadow">
+                <div class="modal-header bg-danger text-white rounded-top-4">
+                  <h5 class="modal-title" id="deleteModalLabelIncidencia<%= incidencia.id %>">Confirmació d'eliminació</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tancar"></button>
+                </div>
+                <div class="modal-body text-center">
+                  <p class="mb-3 fs-6">⚠️ Estàs segur que vols eliminar la incidència <strong><%= incidencia.id %></strong>? Aquesta acció no es pot desfer.</p>
+                </div>
+                <div class="modal-footer justify-content-center border-0 pb-4">
+                  <a href="/incidencies/<%= incidencia.id %>/delete" class="btn btn-danger px-4 rounded-pill">Sí, eliminar</a>
+                  <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancel·lar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal eliminar actuacions -->
+          <% incidencia.Actuacios.forEach(actuacio => { %>
+            <div class="modal fade" id="deleteModalActuacio<%= actuacio.id %>" tabindex="-1" aria-labelledby="deleteModalLabelActuacio<%= actuacio.id %>" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 rounded-4 shadow">
+                  <div class="modal-header bg-danger text-white rounded-top-4">
+                    <h5 class="modal-title" id="deleteModalLabelActuacio<%= actuacio.id %>">Confirmació d'eliminació</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tancar"></button>
+                  </div>
+                  <div class="modal-body text-center">
+                    <p class="mb-3 fs-6">⚠️ Estàs segur que vols eliminar l'actuació <strong><%= actuacio.id %></strong>? Aquesta acció no es pot desfer.</p>
+                  </div>
+                  <div class="modal-footer justify-content-center border-0 pb-4">
+                    <form action="/actuacions/<%= actuacio.id %>/delete" method="POST">
+                      <button type="submit" class="btn btn-danger px-4 rounded-pill">Sí, eliminar</button>
+                    </form>
+                    <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancel·lar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        <% }) %>
+
+        <!-- Modal eliminar tècnic -->
+        <div class="modal fade" id="deleteModalTecnic<%= tecnic.id %>" tabindex="-1" aria-labelledby="deleteModalLabelTecnic<%= tecnic.id %>" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow">
+              <div class="modal-header bg-danger text-white rounded-top-4">
+                <h5 class="modal-title" id="deleteModalLabelTecnic<%= tecnic.id %>">Confirmació d'eliminació</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tancar"></button>
+              </div>
+              <div class="modal-body text-center">
+                <p class="mb-3 fs-6">⚠️ Estàs segur que vols eliminar el tècnic <strong><%= tecnic.nom %></strong>? Aquesta acció no es pot desfer.</p>
+              </div>
+              <div class="modal-footer justify-content-center border-0 pb-4">
+                <a href="/tecnics/<%= tecnic.id %>/delete" class="btn btn-danger px-4 rounded-pill">Sí, eliminar</a>
+                <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancel·lar</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     <% }) %>

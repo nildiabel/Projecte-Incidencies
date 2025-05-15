@@ -21,11 +21,14 @@ async function connectMongo() {
     console.log("✅ Conectado a MongoDB y colección 'logs' lista");
   } catch (err) {
     console.error("❌ Error al conectar a MongoDB:", err);
+    // Reintentar conexión después de 5 segundos si falla
+    setTimeout(connectMongo, 5000);
   }
 }
 
 function getMongoCollection() {
   return collection;
 }
+
 
 module.exports = { connectMongo, getMongoCollection };

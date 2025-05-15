@@ -8,6 +8,21 @@ const path = require('path');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use((req, res, next) => {
+  // Excluir todas las rutas estáticas y solicitudes no-GET
+  if (req.method !== 'GET' || req.path.match(/\.(css|js|jpg|png|ico|svg|webp|woff2?)$/i)) {
+    return next();
+  }
+  next();
+});
+
+// app.js
+const { connectMongo } = require('./mongo');
+
+// Conexión a MongoDB
+connectMongo();
+
+
 
 const Incidencia = require('./models/Incidencia');
 const Departament = require('./models/Departament');
@@ -19,11 +34,6 @@ app.use('/logs', logsRoutes);
 const adminRoutes = require('./routes/adminEJS.routes');
 app.use('/', adminRoutes);
 
-// app.js
-const { connectMongo } = require('./mongo');
-
-// Conexión a MongoDB
-connectMongo();
 
 
 // Relacions
@@ -33,8 +43,9 @@ Incidencia.belongsTo(Departament, { foreignKey: 'id_departament', onUpdate: 'CAS
 Tecnic.hasMany(Incidencia, { foreignKey: 'id_tecnic', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
 Incidencia.belongsTo(Tecnic, { foreignKey: 'id_tecnic', onUpdate: 'CASCADE' });
 
-Incidencia.hasMany(Actuacio, { foreignKey: 'id_incidencia', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Actuacio.belongsTo(Incidencia, { foreignKey: 'id_incidencia', onUpdate: 'CASCADE' });
+Incidencia.hasMany(Actuacio, {foreignKey: 'id_incidencia',onDelete: 'CASCADE',onUpdate: 'CASCADE',constraints: true});
+
+Actuacio.belongsTo(Incidencia, {foreignKey: 'id_incidencia',onUpdate: 'CASCADE',constraints: true});
 
 Tecnic.hasMany(Actuacio, { foreignKey: 'id_tecnic', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
 Actuacio.belongsTo(Tecnic, { foreignKey: 'id_tecnic', onUpdate: 'CASCADE' });
@@ -46,8 +57,7 @@ Incidencia.belongsTo(Tipu, { foreignKey: 'id_tipus', onUpdate: 'CASCADE' });
 const incidenciesRoutesEJS = require('./routes/incidenciesEJS.routes');
 const actuacionsRoutesEJS = require('./routes/actuacionsEJS.routes');
 const tecnicsRoutesEJS = require('./routes/tecnicsEJS.routes');
-
-
+const adminRoutesEJS = require('./routes/adminEJS.routes')
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
@@ -61,7 +71,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/incidencies', incidenciesRoutesEJS);
 app.use('/actuacions', actuacionsRoutesEJS);
 app.use('/tecnics', tecnicsRoutesEJS);
-
+app.use('/admin', adminRoutesEJS);
 
 // Ruta inicial
 app.get('/', (req, res) => {
@@ -155,21 +165,21 @@ const port = process.env.PORT || 3000;
     const existingActuacions = await Actuacio.findOne({ where: { id: 1 } });
     if (!existingActuacions) {
       await Actuacio.bulkCreate([
-      { id_incidencia: 1, id_tecnic: 1, descripcio_actuacio: 'Revisió inicial' },
-      { id_incidencia: 1, id_tecnic: 1, descripcio_actuacio: 'Resolució de l\'error' },
-      { id_incidencia: 1, id_tecnic: 1, descripcio_actuacio: 'Verificació final' },
-      { id_incidencia: 2, id_tecnic: 2, descripcio_actuacio: 'Revisió inicial' },
-      { id_incidencia: 2, id_tecnic: 2, descripcio_actuacio: 'Resolució de l\'error' },
-      { id_incidencia: 2, id_tecnic: 2, descripcio_actuacio: 'Verificació final' },
-      { id_incidencia: 3, id_tecnic: 3, descripcio_actuacio: 'Revisió inicial' },
-      { id_incidencia: 3, id_tecnic: 3, descripcio_actuacio: 'Resolució de l\'error' },
-      { id_incidencia: 3, id_tecnic: 3, descripcio_actuacio: 'Verificació final' },
-      { id_incidencia: 4, id_tecnic: 4, descripcio_actuacio: 'Revisió inicial' },
-      { id_incidencia: 4, id_tecnic: 4, descripcio_actuacio: 'Resolució de l\'error' },
-      { id_incidencia: 4, id_tecnic: 4, descripcio_actuacio: 'Verificació final' },
-      { id_incidencia: 5, id_tecnic: 5, descripcio_actuacio: 'Revisió inicial' },
-      { id_incidencia: 5, id_tecnic: 5, descripcio_actuacio: 'Resolució de l\'error' },
-      { id_incidencia: 5, id_tecnic: 5, descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 1, id_tecnic: 1, temps: '30', descripcio_actuacio: 'Revisió inicial' },
+      { id_incidencia: 1, id_tecnic: 1, temps: '40', descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 1, id_tecnic: 1, temps: '60', descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 2, id_tecnic: 2, temps: '50', descripcio_actuacio: 'Revisió inicial' },
+      { id_incidencia: 2, id_tecnic: 2, temps: '20', descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 2, id_tecnic: 2, temps: '30', descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 3, id_tecnic: 3, temps: '40', descripcio_actuacio: 'Revisió inicial' },
+      { id_incidencia: 3, id_tecnic: 3, temps: '30', descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 3, id_tecnic: 3, temps: '10', descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 4, id_tecnic: 4, temps: '40', descripcio_actuacio: 'Revisió inicial' },
+      { id_incidencia: 4, id_tecnic: 4, temps: '50', descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 4, id_tecnic: 4, temps: '10', descripcio_actuacio: 'Verificació final' },
+      { id_incidencia: 5, id_tecnic: 5, temps: '10', descripcio_actuacio: 'Revisió inicial' },
+      { id_incidencia: 5, id_tecnic: 5, temps: '20', descripcio_actuacio: 'Resolució de l\'error' },
+      { id_incidencia: 5, id_tecnic: 5, temps: '20', descripcio_actuacio: 'Verificació final' },
       
       ]);
       console.log('Actuacions inicials creades');
