@@ -1,0 +1,226 @@
+<%- include('../partials/header', { title: 'Panel de Administración' }) %>
+
+<style>
+  /* Contenedor flex para los gráficos */
+  .charts-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: nowrap; /* evita que bajen */
+    overflow-x: auto;  /* si no caben, sale scroll horizontal */
+  }
+  .chart-card {
+    flex: 1 1 300px; /* cada gráfico mínimo 300px, crece si hay espacio */
+    max-width: 32%;  /* para que quepan 3 en fila */
+  }
+  /* Ajuste para canvas que ocupen todo el ancho del card-body */
+  .chart-card canvas {
+    width: 100% !important;
+    height: 200px !important;
+  }
+  /* Para el nuevo gráfico de paginas más visitadas */
+  .paginas-chart-card {
+    margin-top: 20px;
+    max-width: 600px;
+  }
+  #chartPaginas {
+    width: 100% !important;
+    height: 350px !important;
+  }
+  .chart-container {
+    max-width: 900px;
+    margin: 0 auto; /* centra horizontalmente */
+  }
+</style>
+
+<div class="container mt-4">
+  <h1>Panel de Administración</h1>
+
+  <div class="card my-3">
+    <div class="card-body">
+      <h5 class="card-title">Total de accesos</h5>
+      <p class="card-text fs-4"><strong><%= stats.totalAccesos %></strong></p>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="card chart-card">
+      <div class="card-body">
+        <h5 class="card-title">Accesos por día</h5>
+        <canvas id="chartAccesos"></canvas>
+      </div>
+    </div>
+
+    <div class="card chart-card">
+      <div class="card-body">
+        <h5 class="card-title">Accesos por Navegador</h5>
+        <canvas id="chartNavegadores"></canvas>
+      </div>
+    </div>
+
+    <div class="card chart-card">
+      <div class="card-body">
+        <h5 class="card-title">Accesos por Sistema Operativo</h5>
+        <canvas id="chartSO"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Detalles</h5>
+          <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Cantidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% accesosPorDia.forEach(dia => { %>
+                <tr>
+                  <td><%= dia.fecha %></td>
+                  <td><%= dia.cantidad %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nuevo gráfico paginas mas visitadas -->
+  <div class="card paginas-chart-card">
+    <div class="card-body">
+      <h5 class="card-title">Páginas más visitadas (en tiempo real)</h5>
+      <canvas id="chartPaginas"></canvas>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const chartData = <%- JSON.stringify(chartData) %>;
+    const navegadoresData = <%- JSON.stringify(navegadoresData) %>;
+    const soData = <%- JSON.stringify(soData) %>;
+
+    // Accesos por día
+    const ctxAccesos = document.getElementById('chartAccesos').getContext('2d');
+    new Chart(ctxAccesos, {
+      type: 'bar',
+      data: {
+        labels: chartData.map(item => item.fecha),
+        datasets: [{
+          label: 'Accesos por día',
+          data: chartData.map(item => item.cantidad),
+          backgroundColor: 'rgba(54, 162, 235, 0.7)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0, stepSize: 1 } },
+          x: { ticks: { autoSkip: true, maxRotation: 45, minRotation: 45 } }
+        }
+      }
+    });
+
+    // Accesos por navegador
+    const ctxNavegadores = document.getElementById('chartNavegadores').getContext('2d');
+    new Chart(ctxNavegadores, {
+      type: 'pie',
+      data: {
+        labels: navegadoresData.map(item => item.navegador || 'Desconocido'),
+        datasets: [{
+          label: 'Accesos por navegador',
+          data: navegadoresData.map(item => item.cantidad),
+          backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#20c997']
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+
+    // Accesos por sistema operativo
+    const ctxSO = document.getElementById('chartSO').getContext('2d');
+    new Chart(ctxSO, {
+      type: 'doughnut',
+      data: {
+        labels: soData.map(item => item.sistemaOperativo || 'Desconocido'),
+        datasets: [{
+          label: 'Accesos por sistema operativo',
+          data: soData.map(item => item.cantidad),
+          backgroundColor: ['#17a2b8', '#6610f2', '#fd7e14', '#e83e8c', '#28a745', '#6c757d']
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+
+    // Gráfico paginas más visitadas - iniciamos vacío
+    const ctxPaginas = document.getElementById('chartPaginas').getContext('2d');
+    let chartPaginas = new Chart(ctxPaginas, {
+  type: 'bar',
+  data: {
+    labels: [],
+    datasets: [{
+      label: 'Visitas',
+      data: [],
+      backgroundColor: 'rgba(255, 159, 64, 0.7)',
+      borderColor: 'rgba(255, 159, 64, 1)',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    indexAxis: 'y',  // <--- esto pone las barras horizontales
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { beginAtZero: true, ticks: { precision: 0, stepSize: 1 } },
+      y: {
+        // Ajustes opcionales para etiquetas si quieres que no se amontonen
+        ticks: { autoSkip: false }
+      }
+    }
+  }
+});
+
+
+    // Función para actualizar el gráfico paginas más visitadas desde la API
+    async function actualizarPaginasMasVisitadas() {
+      try {
+        const response = await fetch('/admin/paginasMasVisitadas');
+        const paginas = await response.json();
+
+        chartPaginas.data.labels = paginas.map(p => p.pagina);
+        chartPaginas.data.datasets[0].data = paginas.map(p => p.cantidad);
+        chartPaginas.update();
+      } catch (error) {
+        console.error('Error al cargar páginas más visitadas:', error);
+      }
+    }
+
+    // Actualizar al cargar y cada 30 segundos
+    actualizarPaginasMasVisitadas();
+    setInterval(actualizarPaginasMasVisitadas, 30000);
+
+    // Actualizar contador accesos total
+    async function actualizarContador() {
+      try {
+        const response = await fetch('/admin/contador');
+        const { totalAccesos } = await response.json();
+        document.querySelector('.card-text strong').textContent = totalAccesos;
+      } catch (err) {
+        console.error('Error al actualizar contador:', err);
+      }
+    }
+    setInterval(actualizarContador, 30000);
+  });
+</script>
+
+<%- include('../partials/footer') %>

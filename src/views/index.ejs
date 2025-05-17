@@ -1,6 +1,25 @@
 <!-- src/views/index.ejs -->
 <%- include('partials/header', { title: 'Projecte Incidències' }) %>
 <!-- Contenido principal -->
+<% if (messages && messages.success && messages.success.length > 0) { %>
+  <!-- Toast creació -->
+  <div 
+  class="toast align-items-center text-bg-success border-0 position-fixed bottom-0 end-0 m-3" 
+  role="alert" aria-live="assertive" aria-atomic="true"
+  id="createToast" data-bs-delay="4000" data-bs-autohide="true"
+>
+  <div class="d-flex">
+    <div class="toast-body">
+      <strong>✅ Incidència creada!</strong><br>
+      <%= messages.success[0] %>
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Tancar"></button>
+  </div>
+</div>
+<% } %>
+
+
+
 <div id="main-content" class="container mt-5 fade-in">
   <div class="text-center mb-5">
     <h1 class="display-4 fw-bold text-dark">Benvingut al <span class="text-primary">Projecte d’Incidències</span></h1>
@@ -9,7 +28,18 @@
     <br>
     <a class="btn btn-lg btn-primary mt-3 shadow" href="/incidencies/new">➕ Afegir Incidència</a>
   </div>
-
+  <div class="card shadow-sm border-0 p-4">
+    <h4 class="fw-bold mb-3">🔎 Consulta la teva incidència</h4>
+    <div class="input-group mb-3">
+      <input type="text" id="incidenciaIdInput" class="form-control" placeholder="Introdueix l'ID de la teva incidència">
+      <button class="btn btn-primary" onclick="consultarIncidencia()">Consultar</button>
+    </div>
+    <div id="resultadoIncidencia" class="mt-3 d-none">
+      <!-- Aquí se mostrará la información -->
+    </div>
+    <div id="errorIncidencia" class="text-danger mt-2 d-none"></div>
+  </div>
+  <br>
   <div class="row text-center">
     <div class="col-md-4 mb-4">
       <div class="card h-100 shadow-sm border-0">
@@ -108,9 +138,141 @@
       transform: translateY(0);
     }
   }
-
+  .toast {
+      z-index: 1080; /* superior al contenido principal (Bootstrap usa 1055 para modals) */
+  }
+  
+  .toast-container {
+      z-index: 1080;
+  }
  
 </style>
+
+<script>
+  async function consultarIncidencia() {
+    const id = document.getElementById('incidenciaIdInput').value.trim();
+    const resultadoDiv = document.getElementById('resultadoIncidencia');
+    const errorDiv = document.getElementById('errorIncidencia');
+
+    resultadoDiv.classList.add('d-none');
+    errorDiv.classList.add('d-none');
+    resultadoDiv.innerHTML = '';
+    errorDiv.innerText = '';
+
+    if (!id) {
+      errorDiv.textContent = "⚠️ Introdueix un ID vàlid.";
+      errorDiv.classList.remove('d-none');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/incidencies/${id}`);
+      if (!res.ok) {
+        throw new Error('Incidència no trobada');
+      }
+
+      const incidencia = await res.json();
+
+      resultadoDiv.innerHTML = `
+        <div class="alert alert-info fade-in">
+          <h5 class="fw-bold">📄 Informació de la incidència</h5>
+          <ul class="list-unstyled">
+            <li><strong>Descripció:</strong> ${incidencia.descripcio || 'No disponible'}</li>
+            <li><strong>Estat:</strong> ${incidencia.estat || 'No disponible'}</li>
+            <li><strong>Prioritat:</strong> ${incidencia.prioritat || 'No disponible'}</li>
+          </ul>
+        </div>
+      `;
+      resultadoDiv.classList.remove('d-none');
+
+    } catch (error) {
+      errorDiv.textContent = "❌ No s'ha trobat cap incidència amb aquest ID.";
+      errorDiv.classList.remove('d-none');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+  let chartPaginas;
+
+  async function cargarPaginasMasVisitadas() {
+    try {
+      const response = await fetch('/admin/paginasMasVisitadas');
+      const paginasData = await response.json();
+
+      const ctxPaginas = document.getElementById('chartPaginas').getContext('2d');
+
+      if (chartPaginas) {
+        // Actualiza los datos del gráfico si ya existe
+        chartPaginas.data.labels = paginasData.map(item => item.pagina);
+        chartPaginas.data.datasets[0].data = paginasData.map(item => item.cantidad);
+        chartPaginas.update();
+      } else {
+        // Crea el gráfico por primera vez
+        chartPaginas = new Chart(ctxPaginas, {
+          type: 'bar',
+          data: {
+            labels: paginasData.map(item => item.pagina),
+            datasets: [{
+              label: 'Visitas',
+              data: paginasData.map(item => item.cantidad),
+              backgroundColor: 'rgba(255, 159, 64, 0.7)',
+              borderColor: 'rgba(255, 159, 64, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { precision: 0, stepSize: 1 }
+              }
+            }
+          }
+        });
+      }
+    } catch (err) {
+      console.error('Error cargando páginas más visitadas:', err);
+    }
+  }
+
+  // Carga inicial
+  cargarPaginasMasVisitadas();
+
+  // Actualiza cada 30 segundos
+  setInterval(cargarPaginasMasVisitadas, 30000);
+
+  async function actualizarPaginasMasVisitadas() {
+  try {
+    const response = await fetch('/admin/paginasMasVisitadas');
+    const paginas = await response.json();
+
+    const lista = document.getElementById('listaPaginasMasVisitadas');
+    lista.innerHTML = ''; // limpio la lista
+
+    paginas.forEach(pagina => {
+      const li = document.createElement('li');
+      li.classList.add('list-group-item');
+      li.textContent = `${pagina.pagina} - ${pagina.cantidad} visitas`;
+      lista.appendChild(li);
+    });
+  } catch (error) {
+    console.error('Error al cargar páginas más visitadas:', error);
+  }
+}
+
+// Actualizar al cargar la página
+actualizarPaginasMasVisitadas();
+// Actualizar cada 30 segundos (o el intervalo que prefieras)
+setInterval(actualizarPaginasMasVisitadas, 30000);
+
+});
+
+
+</script>
+
+
 
 <%- include('partials/footer') %>
 

@@ -26,17 +26,17 @@
     </div>
 
     <div class="mb-3">
-      <label for="tecnic_id" class="form-label">Tècnic</label>
-      <select id="tecnic_id" name="tecnic_id" class="form-select" required>
-          <option disabled selected value="">-- Selecciona un Tècnic --</option>
+      <label for="id_tecnic" class="form-label">Tècnic</label>
+      <select id="id_tecnic" name="id_tecnic" class="form-select" required>
+        <option disabled selected value="">-- Selecciona un Tècnic --</option>
         <% tecnics.forEach(tecnic => { %>
-          <option value="<%= tecnic.id %>" <%= tecnic.id === incidencia.tecnic_id ? 'selected' : '' %>>
+          <option value="<%= tecnic.id %>" <%= tecnic.id === incidencia.id_tecnic ? 'selected' : '' %>>
             <%= tecnic.nom %>
           </option>
         <% }) %>
       </select>
     </div>
-
+    
     <div class="mb-3">
       <label for="estat" class="form-label">Estat</label>
       <select id="estat" name="estat" class="form-select" required>
@@ -49,6 +49,20 @@
       <button type="submit" class="btn btn-primary">Actualitzar</button>
     </div>
   </form>
+
+  <% if (messages.success) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= messages.success %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+  <% if (messages.error) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <%= messages.error %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+  
 </div>
 
 <%- include('../partials/footer') %>

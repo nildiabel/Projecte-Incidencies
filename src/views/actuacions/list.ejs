@@ -1,4 +1,74 @@
 <%- include('../partials/header', { title: 'Llistat d\'actuacions' }) %>
+<style>
+  .toast {
+    z-index: 1080; /* Superior al contenido principal */
+  }
+  .toast-container {
+    z-index: 1080;
+  }
+</style>
+
+<% if (messages && messages.success && messages.success.length > 0) { %>
+  <% if (messages.success[0].includes('editada')) { %>
+    <!-- Toast edición -->
+    <div 
+      class="toast align-items-center text-bg-warning border-0 position-fixed bottom-0 end-0 m-3" 
+      role="alert" aria-live="assertive" aria-atomic="true"
+      id="editToast" data-bs-delay="4000" data-bs-autohide="true"
+    >
+      <div class="d-flex">
+        <div class="toast-body text-dark">
+          <strong>📝 Edició realitzada!</strong><br>
+          <%= messages.success[0] %>
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Tancar"></button>
+      </div>
+    </div>
+  <% } else if (messages.success[0].includes('eliminada')) { %>
+    <!-- Toast eliminación -->
+    <div 
+      class="toast align-items-center text-bg-danger border-0 position-fixed bottom-0 end-0 m-3" 
+      role="alert" aria-live="assertive" aria-atomic="true"
+      id="deleteToast" data-bs-delay="4000" data-bs-autohide="true"
+    >
+      <div class="d-flex">
+        <div class="toast-body text-white">
+          <strong>🗑️ Actuació eliminada!</strong><br>
+          <%= messages.success[0] %>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Tancar"></button>
+      </div>
+    </div>
+  <% } else { %>
+    <!-- Toast creación -->
+    <div 
+      class="toast align-items-center text-bg-success border-0 position-fixed bottom-0 end-0 m-3" 
+      role="alert" aria-live="assertive" aria-atomic="true"
+      id="createToast" data-bs-delay="4000" data-bs-autohide="true"
+    >
+      <div class="d-flex">
+        <div class="toast-body">
+          <strong>✅ Actuació creada!</strong><br>
+          <%= messages.success[0] %>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Tancar"></button>
+      </div>
+    </div>
+  <% } %>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const toastEdit = document.getElementById('editToast');
+      const toastCreate = document.getElementById('createToast');
+      const toastDelete = document.getElementById('deleteToast');
+      if (toastEdit) new bootstrap.Toast(toastEdit).show();
+      if (toastCreate) new bootstrap.Toast(toastCreate).show();
+      if (toastDelete) new bootstrap.Toast(toastDelete).show();
+    });
+  </script>
+<% } %>
+
+
 
 <div class="container py-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
@@ -13,9 +83,26 @@
 
     <form class="mb-4" onsubmit="event.preventDefault();">
       <label for="searchId" class="form-label fw-semibold">Filtrar per ID d'incidència:</label>
-      <input type="number" id="searchId" class="form-control" placeholder="Filtra por número de ID" oninput="filterByIncidenciaId()">
-    </form>
+      <input type="number" id="searchId" class="form-control mb-3" placeholder="Filtra por número de ID" oninput="filterByIncidenciaId()">
+    
+      <label for="filterTecnics" class="form-label fw-semibold">Filtrar per tècnic:</label>
+      <select id="filterTecnics" class="form-select" onchange="filterByTecnico()">
+        <option value="">-- Tots els tècnics --</option>
+        <% 
+          const tecnicsSet = new Set();
+          actuacions.forEach(act => {
+            if (act.Tecnic && act.Tecnic.nom) tecnicsSet.add(act.Tecnic.nom);
+          });
+          Array.from(tecnicsSet).forEach(nom => { 
+        %>
+          <option value="<%= nom %>"><%= nom %></option>
+        <% }) %>
+      </select>
 
+      <button type="button" class="btn btn-outline-secondary" onclick="resetFilters()">🔄 Netejar filtres</button>
+
+    </form>
+    
   <div class="card shadow-sm rounded-4 border-0">
     <div class="card-body">
       <table class="table align-middle table-hover">
@@ -24,24 +111,48 @@
             <th>ID</th>
             <th>Descripció</th>
             <th>Temps (min)</th>
+            <th>Tècnic</th>
             <th class="text-center">Accions</th>
           </tr>
         </thead>
+        
         <tbody>
           <% actuacions.forEach(actuacio => { %>
-            <tr data-incidencia-id="<%= actuacio.id_incidencia %>">
+            <tr data-incidencia-id="<%= actuacio.id_incidencia %>" data-tecnic-nom="<%= actuacio.Tecnic?.nom || '' %>">
               <td class="fw-semibold"><%= actuacio.id %></td>
               <td><%= actuacio.descripcio_actuacio %></td>
               <td><%= actuacio.temps %></td>
+              <td><%= actuacio.Tecnic?.nom || '—' %></td>
               <td class="text-center">
                 <a href="/actuacions/<%= actuacio.id %>/edit" class="btn btn-sm btn-outline-warning me-1">
                   ✏️ Editar
                 </a>
-                <form action="/actuacions/<%= actuacio.id %>/delete" method="POST" class="d-inline">
-                  <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Segur que vols eliminar aquesta actuació?')">
-                    🗑️ Eliminar
-                  </button>
-                </form>  
+               <!-- Botón para abrir el modal -->
+<button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<%= actuacio.id %>">
+  🗑️ Eliminar
+</button>
+
+<!-- Modal de confirmació -->
+<div class="modal fade" id="deleteModal<%= actuacio.id %>" tabindex="-1" aria-labelledby="deleteModalLabel<%= actuacio.id %>" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 shadow">
+      <div class="modal-header bg-danger text-white rounded-top-4">
+        <h5 class="modal-title" id="deleteModalLabel<%= actuacio.id %>">Confirmació d'eliminació</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tancar"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-3 fs-6">⚠️ Segur que vols eliminar l’actuació <strong><%= actuacio.id %></strong>? Aquesta acció no es pot desfer.</p>
+      </div>
+      <div class="modal-footer justify-content-center border-0 pb-4">
+        <form action="/actuacions/<%= actuacio.id %>/delete" method="POST">
+          <button type="submit" class="btn btn-danger px-4 rounded-pill">Sí, eliminar</button>
+        </form>
+        <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancel·lar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
               </td>
             </tr>
           <% }) %>
@@ -53,19 +164,42 @@
 
 
 <script>
-  function filterByIncidenciaId() {
-    const input = document.getElementById("searchId").value.trim();
+  function applyFilters() {
+    const inputId = document.getElementById("searchId").value.trim();
+    const tecnico = document.getElementById("filterTecnics").value.trim().toLowerCase();
     const rows = document.querySelectorAll("tbody tr");
 
     rows.forEach(row => {
       const incidenciaId = row.dataset.incidenciaId;
-      if (!input || incidenciaId === input) {
+      const tecnicoNom = row.dataset.tecnicNom?.toLowerCase() || '';
+      
+      const matchesId = !inputId || incidenciaId === inputId;
+      const matchesTecnico = !tecnico || tecnicoNom === tecnico;
+
+      if (matchesId && matchesTecnico) {
         row.style.display = "";
       } else {
         row.style.display = "none";
       }
     });
   }
+
+  function resetFilters() {
+    document.getElementById("searchId").value = '';
+    document.getElementById("filterTecnics").value = '';
+    applyFilters(); // Vuelve a mostrar todas las filas
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("searchId").addEventListener("input", applyFilters);
+    document.getElementById("filterTecnics").addEventListener("change", applyFilters);
+  });
 </script>
+
+
+
+
+
+
 
 <%- include('../partials/footer') %>

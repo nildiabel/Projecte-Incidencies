@@ -4,6 +4,19 @@ const app = express();
 require('dotenv').config();
 const sequelize = require('./db');
 const path = require('path');
+const session = require('express-session');
+const flash = require('connect-flash');
+app.use(session({
+  secret: 'tu_clave_secreta',
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.messages = req.flash(); // <-- IMPORTANTE
+  next();
+});
+
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -29,10 +42,6 @@ const Departament = require('./models/Departament');
 const Tecnic = require('./models/Tecnic');
 const Actuacio = require('./models/Actuacio');
 const Tipu = require('./models/Tipu');
-const logsRoutes = require('./routes/logsEJS.routes');
-app.use('/logs', logsRoutes);
-const adminRoutes = require('./routes/adminEJS.routes');
-app.use('/', adminRoutes);
 
 
 
@@ -53,26 +62,32 @@ Actuacio.belongsTo(Tecnic, { foreignKey: 'id_tecnic', onUpdate: 'CASCADE' });
 Tipu.hasMany(Incidencia, { foreignKey: 'id_tipus', onDelete: 'SET NULL', onUpdate: 'CASCADE' });
 Incidencia.belongsTo(Tipu, { foreignKey: 'id_tipus', onUpdate: 'CASCADE' });
 
-// Rutes
-const incidenciesRoutesEJS = require('./routes/incidenciesEJS.routes');
-const actuacionsRoutesEJS = require('./routes/actuacionsEJS.routes');
-const tecnicsRoutesEJS = require('./routes/tecnicsEJS.routes');
-const adminRoutesEJS = require('./routes/adminEJS.routes')
+// Middleware global primero
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
 
 
 // Configuració EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Rutes EJS
-app.use('/incidencies', incidenciesRoutesEJS);
-app.use('/actuacions', actuacionsRoutesEJS);
-app.use('/tecnics', tecnicsRoutesEJS);
-app.use('/admin', adminRoutesEJS);
+// Rutes EJS ÚNICAS
+const incidenciesRoutes = require('./routes/incidenciesEJS.routes');
+const actuacionsRoutes = require('./routes/actuacionsEJS.routes');
+const tecnicsRoutes = require('./routes/tecnicsEJS.routes');
+const adminRoutes = require('./routes/adminEJS.routes');
+const logsRoutes = require('./routes/logsEJS.routes');
+const incidenciesApiRoutes = require('./routes/incidencies.api');
 
+app.use('/', incidenciesApiRoutes);
+app.use('/incidencies', incidenciesRoutes);
+app.use('/actuacions', actuacionsRoutes);
+app.use('/tecnics', tecnicsRoutes);
+app.use('/admin', adminRoutes);
+app.use('/logs', logsRoutes);
+app.use('/', adminRoutes);
 // Ruta inicial
 app.get('/', (req, res) => {
   res.render('index');
@@ -84,7 +99,6 @@ const port = process.env.PORT || 3000;
   try {
     await sequelize.sync();
     console.log('Base de dades sincronitzada (API JSON)');
-
     const existingDepartments = await Departament.findOne();
     if (!existingDepartments) {
       await Departament.bulkCreate([
