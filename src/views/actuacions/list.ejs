@@ -125,4 +125,53 @@
   });
 </script>
 
+
+<script>
+  function applyFilters() {
+    const inputId = document.getElementById("searchId").value.trim();
+    const tecnico = document.getElementById("filterTecnics").value.trim().toLowerCase();
+    const rows = document.querySelectorAll("tbody tr");
+
+    rows.forEach(row => {
+      const incidenciaId = row.dataset.incidenciaId;
+      const tecnicoNom = row.dataset.tecnicNom?.toLowerCase() || '';
+      
+      const matchesId = !inputId || incidenciaId === inputId;
+      const matchesTecnico = !tecnico || tecnicoNom === tecnico;
+
+      if (matchesId && matchesTecnico) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+
+  function resetFilters() {
+    document.getElementById("searchId").value = '';
+    document.getElementById("filterTecnics").value = '';
+    applyFilters(); // Torna a mostrar totes les files
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("searchId").addEventListener("input", applyFilters);
+    document.getElementById("filterTecnics").addEventListener("change", applyFilters);
+  });
+</script>
+
+<% if (msg) { %>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      Swal.fire({
+        icon: '<%= type === "error" ? "error" : "success" %>',
+        title: '<%= type === "error" ? "Error" : "Fet!" %>',
+        text: '<%= msg %>',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
+    });
+  </script>
+<% } %>
 <%- include('../partials/footer') %>

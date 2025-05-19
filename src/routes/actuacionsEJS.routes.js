@@ -7,26 +7,34 @@ const Tecnic = require('../models/Tecnic');
 
 router.post('/create', async (req, res) => {
   try {
-    const novaActuacio = await Actuacio.create({
+    await Actuacio.create({
       descripcio_actuacio: req.body.descripcio_actuacio,
       id_incidencia: parseInt(req.body.id_incidencia),
       id_tecnic: parseInt(req.body.id_tecnic),
       temps: parseInt(req.body.temps),
     });
 
-    res.redirect('/actuacions');
+    res.redirect('/actuacions?msg=' + encodeURIComponent('Actuació creada correctament!') + '&type=success');
   } catch (error) {
     console.error(error);
-    res.redirect('/actuacions/new');
+    res.redirect('/actuacions/new?msg=' + encodeURIComponent('Error al crear l’actuació') + '&type=error');
   }
 });
+
 
 // Llistar actuacions (GET)
 router.get('/', async (req, res) => {
   try {
     const actuacions = await Actuacio.findAll({ include: [Incidencia, Tecnic] });
+
+    // Capturar posibles mensajes de query params
+    const msg = req.query.msg || null;
+    const type = req.query.type || null;
+
     res.render('actuacions/list', {
-      actuacions
+      actuacions,
+      msg,
+      type
     });
   } catch (error) {
     res.status(500).send('Error al recuperar les actuacions');
@@ -87,7 +95,8 @@ router.post('/:id/update', async (req, res) => {
     actuacio.temps = parseInt(temps);
     await actuacio.save();
 
-    res.redirect(redirectTo || '/actuacions');
+    // Redirigir con mensaje de éxito en query string
+    res.redirect(`${redirectTo || '/actuacions'}?msg=${encodeURIComponent('Actuació actualitzada correctament!')}&type=success`);
   } catch (error) {
     console.error('Error al actualitzar l’actuació:', error);
     res.redirect(`/actuacions/${req.params.id}/edit`);
@@ -99,12 +108,13 @@ router.post('/:id/delete', async (req, res) => {
 
   try {
     await Actuacio.destroy({ where: { id: req.params.id } });
-    res.redirect(redirectTo);
+    res.redirect(redirectTo + '?msg=' + encodeURIComponent('Actuació eliminada correctament!') + '&type=success');
   } catch (error) {
     console.error('Error al eliminar l’actuació:', error);
-    res.redirect(redirectTo);
+    res.redirect(redirectTo + '?msg=' + encodeURIComponent('Error al eliminar l’actuació') + '&type=error');
   }
 });
+
 
 // Exportar el router
 module.exports = router;

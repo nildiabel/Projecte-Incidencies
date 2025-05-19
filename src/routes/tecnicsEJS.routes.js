@@ -1,12 +1,9 @@
-// src/routes/tecnicsEJS.routes.js
 const express = require('express');
 const router = express.Router();
 const Incidencia = require('../models/Incidencia');
 const Tecnic = require('../models/Tecnic');
 const Actuacio = require('../models/Actuacio');
 
-// Llistar tècnics (GET)
-// GET /tecnics
 router.get('/', async (req, res) => {
   try {
     const tecnics = await Tecnic.findAll({
@@ -17,14 +14,16 @@ router.get('/', async (req, res) => {
         },
       ],
     });
-    res.render('tecnics/list', { tecnics });
+
+    const msg = req.query.msg || null;
+    const type = req.query.type || 'success'; // <-- Afegeixo type
+    res.render('tecnics/list', { tecnics, msg, type });
   } catch (error) {
     console.error('Error al carregar tècnics:', error);
     res.status(500).send('Error al carregar tècnics');
   }
 });
 
-// Formulari per crear un tècnic (GET)
 router.get('/new', async (req, res) => {
   try {
     const tecnics = await Tecnic.findAll();
@@ -35,32 +34,30 @@ router.get('/new', async (req, res) => {
   }
 });
 
-// Crear tècnic (POST)
 router.post('/create', async (req, res) => {
   try {
     const { nom } = req.body;
     await Tecnic.create({ nom: nom });
-    res.redirect('/tecnics');
+    // Aquí afegeixo type=success perquè la creació va bé
+    res.redirect('/tecnics?msg=' + encodeURIComponent('Tècnic creat correctament!') + '&type=success');
   } catch (error) {
     console.error('Error al crear el tècnic:', error);
-    res.redirect('/tecnics');
+    res.redirect('/tecnics?msg=' + encodeURIComponent('Error en crear el tècnic.') + '&type=error');
   }
 });
 
-// Eliminar tècnic (GET)
 router.get('/:id/delete', async (req, res) => {
   try {
     const tecnic = await Tecnic.findByPk(req.params.id);
     if (!tecnic) {
-      return res.redirect('/tecnics');
+      return res.redirect('/tecnics?msg=' + encodeURIComponent('Tècnic no trobat.') + '&type=error');
     }
     await tecnic.destroy();
-    res.redirect('/tecnics');
+    res.redirect('/tecnics?msg=' + encodeURIComponent('Tècnic eliminat correctament!') + '&type=success');
   } catch (error) {
     console.error('Error al eliminar el tècnic:', error);
-    res.redirect('/tecnics');
+    res.redirect('/tecnics?msg=' + encodeURIComponent('Error en eliminar el tècnic.') + '&type=error');
   }
 });
 
-// Exportar el router
 module.exports = router;
