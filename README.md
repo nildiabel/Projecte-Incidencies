@@ -21,8 +21,7 @@ El projecte es troba **en fase funcional**, amb les principals funcionalitats im
 
 ## 🌐 Enllaços útils
 
-- 🔗 **Documentació PHPDoc**: [https://grup3.net/docs](https://grup3.net/docs)  **PENDENT DE POSAR**
-- 🔗 **Projecte desplegat**: [https://grup3.net/app](https://grup3.net/app)  **PENDENT DE POSAR**
+- 🔗 **DeepWiki**: [https://grup3.net/docs](https://deepwiki.com/nildiabel/Projecte-Incidencies)
 
 ---
 
